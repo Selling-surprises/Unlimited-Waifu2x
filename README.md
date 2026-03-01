@@ -2,7 +2,7 @@
 
 ### 📌 网站简介
 
-**Unlimited Waifu2x**（https://unlimited.waifu2x.net/）是一款基于深度卷积神经网络（CNN）的**免费在线图片无损放大工具**，专门针对**动漫风格图像**优化，同时也支持普通照片处理。**当前网页复刻了https://unlimited.waifu2x.net/，精简了一些模型。**
+**Unlimited Waifu2x（https://unlimited.waifu2x.net/）是一款基于深度卷积神经网络（CNN）的免费在线图片无损放大工具，专门针对动漫风格图像优化，同时也支持普通照片处理。当前网页复刻了https://unlimited.waifu2x.net/，精简了一些模型。**
 
 与原版 Waifu2x（waifu2x.udp.jp）相比，**Unlimited 版本的主要优势**：
 - ✅ **无文件大小限制**（原版限制5MB）
