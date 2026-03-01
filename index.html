@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=yes">
+  <meta http-equiv="origin-trial" content="AtqtRAXYLZl1zcz0JLoU4VkI/ei1/Mkrc7W7aTjejM7JaYxZMCLGoRt/HEpK2F1qyzpXZYScyazHc9rr6uWk5wkAAAB/eyJvcmlnaW4iOiJodHRwczovL3VubGltaXRlZC53YWlmdTJ4Lm5ldDo0NDMiLCJmZWF0dXJlIjoiVW5yZXN0cmljdGVkU2hhcmVkQXJyYXlCdWZmZXIiLCJleHBpcnkiOjE3Mzk5MjMxOTksImlzU3ViZG9tYWluIjp0cnVlfQ==">
+  <link rel="icon" href="favicon.ico">
+  <title>Unlimited Waifu2x</title>
+
+  <!-- 字体 Inter -->
+  <link href="css/Inter.css" rel="stylesheet">
+
+  <!-- 本地 JavaScript 库 (需确保文件存在) -->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/jquery.cookie.js"></script>
+  <script src="js/ort.min.js"></script>
+  <script src="js/script.js" charset="utf-8"></script>
+
+  <style>
+    /* ----- 全局重置与设计令牌 (保持不变) ----- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #f4f7fb;
+      color: #1e293b;
+      line-height: 1.5;
+      padding: 1.5rem 1rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .app-container {
+      max-width: 1400px;
+      width: 100%;
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 2.2rem;
+      letter-spacing: -0.02em;
+      background: linear-gradient(145deg, #0f2b3d, #1e4b6e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.25rem;
+      text-align: center;
+    }
+
+    .subhead {
+      text-align: center;
+      font-size: 0.95rem;
+      color: #475569;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .lang-switch {
+      display: flex;
+      gap: 0.5rem;
+      margin-left: 0.5rem;
+    }
+    .lang-switch button {
+      background: #e9ecf3;
+      border: 1px solid #cbd5e1;
+      border-radius: 30px;
+      padding: 0.2rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #1e3a5f;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+    .lang-switch button:hover {
+      background: #d0ddee;
+      border-color: #7b9ab9;
+    }
+    .lang-switch button.active {
+      background: #1b4c6e;
+      color: white;
+      border-color: #1b4c6e;
+    }
+
+    .subhead .comment {
+      background: #e9eef3;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      color: #1e3a5f;
+    }
+
+    /* 主面板网格 */
+    #main-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.8rem;
+      background: transparent;
+      margin: 2rem 0 1.5rem;
+    }
+
+    #src-box, #dest-box {
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 20px 35px -12px rgba(0,20,40,0.2), 0 2px 8px rgba(0,0,0,0.03);
+      padding: 1.5rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #ffffff50;
+      backdrop-filter: blur(2px);
+    }
+
+    #src-box:hover, #dest-box:hover {
+      box-shadow: 0 25px 45px -12px rgba(0,40,70,0.3);
+    }
+
+    #src-box::before {
+      content: "🖼️ 原始";
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: #4b6584;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    #dest-box::before {
+      content: "✨ 输出";
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: #4b6584;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    #src, #dest {
+      width: 100%;
+      height: auto;
+      border-radius: 18px;
+      background: #f0f4fa;
+      box-shadow: inset 0 2px 6px #00000010, 0 4px 12px #0000000c;
+      transition: all 0.2s;
+      display: block;
+      object-fit: contain;
+      min-height: 200px;
+      background-image: linear-gradient(45deg, #d9e2ec 25%, transparent 25%),
+                        linear-gradient(-45deg, #d9e2ec 25%, transparent 25%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px;
+    }
+
+    #src:hover, #dest:hover {
+      cursor: w-resize;
+    }
+
+    #form-box {
+      grid-column: 1 / -1;
+      background: #ffffffdd;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid #ffffff;
+      border-radius: 32px;
+      box-shadow: 0 20px 40px -18px #1e293b40, 0 8px 20px -8px #00000010;
+      padding: 2rem 2rem 1.8rem;
+      margin-top: 0.5rem;
+    }
+
+    #form-box table {
+      width: 100%;
+      display: block;
+      border-collapse: collapse;
+    }
+
+    #form-box tbody {
+      display: block;
+    }
+
+    #form-box tr {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 1.2rem;
+      gap: 0.5rem 1rem;
+      border-bottom: 1px dashed #dde7f0;
+      padding-bottom: 0.8rem;
+    }
+
+    #form-box tr:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    #form-box td:first-child {
+      font-weight: 550;
+      color: #1e3a5f;
+      min-width: 150px;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+      background: #ecf3f9;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      display: inline-block;
+      width: auto;
+      box-shadow: inset 0 1px 3px #ffffff, 0 2px 4px #00000008;
+    }
+
+    #form-box td:last-child {
+      flex: 1;
+      min-width: 260px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    #form-box tr:has(td[colspan="2"]) {
+      display: flex;
+      justify-content: center;
+      border-bottom: none;
+      padding-top: 1rem;
+    }
+
+    #form-box tr:has(td[colspan="2"]) td {
+      min-width: auto;
+      background: transparent;
+      box-shadow: none;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    select, input[type="file"], input[type="checkbox"] {
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 40px;
+      padding: 0.55rem 1.2rem;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: #0f2b3d;
+      transition: 0.15s;
+      cursor: pointer;
+      box-shadow: 0 2px 4px #00000008;
+    }
+
+    select {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2334495e" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>');
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1.2rem;
+      appearance: none;
+      -webkit-appearance: none;
+      padding-right: 2.8rem;
+    }
+
+    input[type="file"] {
+      padding: 0.4rem 0.8rem;
+      width: auto;
+      max-width: 280px;
+    }
+
+    select:hover, input[type="file"]:hover {
+      border-color: #7b9ab9;
+      background-color: #fafdff;
+    }
+
+    label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: #2c3e5c;
+      font-size: 0.95rem;
+    }
+
+    input[type="checkbox"] {
+      width: 1.2rem;
+      height: 1.2rem;
+      border-radius: 6px;
+      padding: 0;
+      margin: 0;
+    }
+
+    .comment {
+      font-size: 0.85rem;
+      color: #6d8aac;
+      background: #e8f0fe;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      white-space: nowrap;
+    }
+
+    #scale-comment, #tile-comment {
+      margin-left: 0.2rem;
+    }
+
+    #button-box {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    #start, #stop {
+      border: none;
+      background: #1b4c6e;
+      color: white;
+      font-weight: 550;
+      font-size: 1.2rem;
+      padding: 0.8rem 2.8rem;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: 0.15s;
+      box-shadow: 0 8px 18px -8px #0f2b3d70;
+      letter-spacing: 0.01em;
+      border: 1px solid #ffffff30;
+    }
+
+    #stop {
+      background: #a0b8cc;
+      color: #1e2f40;
+      box-shadow: 0 4px 12px #0000001a;
+    }
+
+    #start:hover {
+      background: #236b97;
+      transform: scale(1.02);
+    }
+
+    #stop:hover {
+      background: #b8cdde;
+    }
+
+    #message {
+      grid-column: 1 / -1;
+      background: #eef4fa;
+      border-radius: 60px;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 450;
+      color: #1a3d62;
+      border: 1px solid #ffffff;
+      box-shadow: 0 2px 10px #0000000c;
+      margin: 1rem 0 0;
+    }
+
+    /* 粘贴按钮样式优化 */
+    #paste-button a {
+      text-decoration: none;
+      background: #e9ecf3;
+      padding: 2px 8px;
+      border-radius: 20px;
+      color: #1e3a5f;
+      font-size: 0.9rem;
+      border: 1px solid #cbd5e1;
+      transition: 0.1s;
+      margin: 0 2px;
+    }
+
+    #paste-button a:hover {
+      background: #d0ddee;
+    }
+
+    #footer {
+      margin-top: 3rem;
+      padding: 2rem 1rem 1rem;
+      border-top: 2px solid #d0e0ee;
+      text-align: center;
+      color: #4b6584;
+      font-size: 0.95rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem 3rem;
+    }
+
+    #footer a {
+      color: #1d4e7c;
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px dotted #9bb7d4;
+    }
+
+    #footer a:hover {
+      color: #0a2a44;
+    }
+
+    @media (max-width: 850px) {
+      #main-panel {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      #form-box tr {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      #form-box td:first-child {
+        width: auto;
+      }
+
+      #form-box td:last-child {
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 1rem 0.5rem;
+      }
+
+      #form-box {
+        padding: 1.5rem 1rem;
+      }
+
+      #start, #stop {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <h1 data-i18n="title">Unlimited Waifu2x</h1>
+    <div class="subhead">
+      <span data-i18n="subhead">⚡ 浏览器端二次元放大 · 完全本地处理</span>
+      <div class="lang-switch">
+        <button id="lang-zh" data-lang="zh" class="active">中文</button>
+        <button id="lang-en" data-lang="en">English</button>
+      </div>
+    </div>
+
+    <div id="main-panel">
+      <div id="src-box">
+        <img id="src" src="blank.png" alt="源图像">
+      </div>
+
+      <div id="dest-box">
+        <canvas id="dest"></canvas>
+      </div>
+
+      <form id="form-box">
+        <table>
+          <tr>
+            <td>
+              <span data-i18n="file_emoji_label">📂 文件</span><span>(</span><span data-i18n="drag_text">拖拽</span><span id="paste-button"></span><span>)</span>
+            </td>
+            <td>
+              <input type="file" id="file" name="file" accept="image/*">
+            </td>
+          </tr>
+          <tr>
+            <td data-i18n="model_label">🧠 模型</td>
+            <td>
+              <select name="model">
+                <option value="swin_unet.art" selected data-i18n="model_swin_art">🎨 swin_unet / 插画</option>
+                <option value="swin_unet.art_scan" data-i18n="model_swin_art_scan">🖨 swin_unet / 扫描插画</option>
+                <option value="swin_unet.photo" data-i18n="model_swin_photo">📷 swin_unet / 照片</option>
+                <option value="cunet.art" data-i18n="model_cunet_art">🎨 cunet / 插画</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td data-i18n="noise_label">🌀 降噪</td>
+            <td>
+              <select name="noise_level">
+                <!-- 高 (原值2) 显示为 (1) 高，并默认选中；最高 (原值3) 显示为 (2) 最高 -->
+                <option value="2" selected data-i18n="noise_high">(1) 高</option>
+                <option value="3" data-i18n="noise_highest">(2) 最高</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td data-i18n="scale_label">🔍 放大</td>
+            <td>
+              <select name="scale">
+                <option value="2" selected data-i18n="scale_2">2倍</option>
+                <option value="4" data-i18n="scale_4">4倍</option>
+              </select>
+              <span id="scale-comment" class="comment" data-i18n="scale_comment">支持2倍/4倍</span>
+            </td>
+          </tr>
+          <tr>
+            <td data-i18n="tile_label">🧩 分块</td>
+            <td>
+              <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+                <select name="tile_size">
+                  <option value="256" selected>256</option>
+                  <option value="400">400</option>
+                  <option value="640">640</option>
+                </select>
+                <label>
+                  <input type="checkbox" name="tile_random" data-i18n-key="tile_random_checkbox"> <span data-i18n="tile_random">随机顺序</span>
+                </label>
+              </div>
+              <span id="tile-comment" class="comment" data-i18n="tile_comment">推荐256</span>
+            </td>
+          </tr>
+          <tr>
+            <td data-i18n="tta_label">🔄 测试增强 (TTA)</td>
+            <td>
+              <select name="tta">
+                <option value="0" selected>0</option>
+                <option value="2">2</option>
+                <option value="4">4</option>
+              </select>
+              <span style="color:#4b6584;" data-i18n="tta_integrated">集成</span>
+            </td>
+          </tr>
+          <tr>
+            <td data-i18n="alpha_label">🎭 透明通道</td>
+            <td>
+              <select name="alpha">
+                <option value="1" data-i18n="alpha_auto">自动</option>
+                <option value="0" selected data-i18n="alpha_disable">禁用</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div id="button-box">
+                <input type="button" id="start" value="开始" data-i18n="start_btn">
+                <input type="button" id="stop" value="停止" data-i18n="stop_btn">
+              </div>
+            </td>
+          </tr>
+        </table>
+      </form>
+
+      <div id="message" data-i18n="message_ready">( ・∀・) 准备就绪</div>
+    </div>
+
+    <div id="footer">
+      <div>
+        <span data-i18n="footer_based">基于</span> 
+        <a href="https://github.com/nagadomi/nunif" target="_blank" rel="noopener" data-i18n="footer_link">nunif/waifu2x/unlimited_waifu2x 代码</a>
+      </div>
+      <div><a href="privacy_policy.txt" data-i18n="footer_privacy">隐私政策</a></div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ---------- 中英文国际化字典 (更新降噪显示文本) ----------
+      const i18n = {
+        zh: {
+          title: "Unlimited Waifu2x",
+          subhead: "⚡ 浏览器端二次元放大 · 完全本地处理",
+          file_emoji_label: "📂 文件",
+          drag_text: "拖拽",
+          model_label: "🧠 模型",
+          noise_label: "🌀 降噪",
+          scale_label: "🔍 放大",
+          tile_label: "🧩 分块",
+          tta_label: "🔄 测试增强 (TTA)",
+          alpha_label: "🎭 透明通道",
+          model_swin_art: "🎨 swin_unet / 插画",
+          model_swin_art_scan: "🖨 swin_unet / 扫描插画",
+          model_swin_photo: "📷 swin_unet / 照片",
+          model_cunet_art: "🎨 cunet / 插画",
+          // 降噪：高显示为(1) 高，最高显示为(2) 最高
+          noise_high: "(1) 高",
+          noise_highest: "(2) 最高",
+          scale_2: "2倍",
+          scale_4: "4倍",
+          tile_random: "随机顺序",
+          tta_integrated: "集成",
+          alpha_auto: "自动",
+          alpha_disable: "禁用",
+          start_btn: "开始",
+          stop_btn: "停止",
+          message_ready: "( ・∀・) 准备就绪",
+          scale_comment: "支持2倍/4倍",
+          tile_comment: "推荐256",
+          footer_based: "基于",
+          footer_link: "nunif/waifu2x/unlimited_waifu2x 代码",
+          footer_privacy: "隐私政策",
+          paste_text: "粘贴",
+        },
+        en: {
+          title: "Unlimited Waifu2x",
+          subhead: "⚡ Browser-side anime upscaling · Fully local",
+          file_emoji_label: "📂 File",
+          drag_text: "drag",
+          model_label: "🧠 Model",
+          noise_label: "🌀 Noise Reduction",
+          scale_label: "🔍 Scale",
+          tile_label: "🧩 Tile",
+          tta_label: "🔄 TTA",
+          alpha_label: "🎭 Alpha",
+          model_swin_art: "🎨 swin_unet / Illustration",
+          model_swin_art_scan: "🖨 swin_unet / Scanned Illustration",
+          model_swin_photo: "📷 swin_unet / Photo",
+          model_cunet_art: "🎨 cunet / Illustration",
+          // Noise: High shows as (1) High, Highest shows as (2) Highest
+          noise_high: "(1) High",
+          noise_highest: "(2) Highest",
+          scale_2: "2x",
+          scale_4: "4x",
+          tile_random: "Random order",
+          tta_integrated: "integrated",
+          alpha_auto: "Auto",
+          alpha_disable: "Disabled",
+          start_btn: "Start",
+          stop_btn: "Stop",
+          message_ready: "( ・∀・) Ready",
+          scale_comment: "2x/4x supported",
+          tile_comment: "256 recommended",
+          footer_based: "Based on",
+          footer_link: "nunif/waifu2x/unlimited_waifu2x code",
+          footer_privacy: "Privacy Policy",
+          paste_text: "paste",
+        }
+      };
+
+      let currentLang = 'zh';   // 默认中文
+
+      // 切换语言函数
+      function switchLang(lang) {
+        if (!i18n[lang]) return;
+        currentLang = lang;
+
+        // 更新所有带 data-i18n 属性的元素
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (i18n[lang][key]) {
+            // 如果是 input 按钮，设置 value；否则设置 textContent
+            if (el.tagName === 'INPUT' && (el.type === 'button' || el.type === 'submit')) {
+              el.value = i18n[lang][key];
+            } else {
+              el.textContent = i18n[lang][key];
+            }
+          }
+        });
+
+        // 特别处理 #paste-button 内的链接（如果存在，由外部脚本生成）
+        const pasteLink = document.querySelector('#paste-button a');
+        if (pasteLink) {
+          if (!pasteLink.hasAttribute('data-i18n')) {
+            pasteLink.setAttribute('data-i18n', 'paste_text');
+          }
+          pasteLink.textContent = i18n[lang].paste_text;
+        }
+
+        // 切换按钮激活状态
+        document.querySelectorAll('.lang-switch button').forEach(btn => {
+          const btnLang = btn.getAttribute('data-lang');
+          if (btnLang === lang) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+      }
+
+      // 初始化：绑定语言切换按钮事件
+      document.addEventListener('DOMContentLoaded', function() {
+        // 默认激活中文
+        switchLang('zh');
+
+        document.getElementById('lang-zh').addEventListener('click', function() {
+          switchLang('zh');
+        });
+        document.getElementById('lang-en').addEventListener('click', function() {
+          switchLang('en');
+        });
+
+        // 监听可能动态添加到 #paste-button 的链接
+        const observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+              const pasteLink = document.querySelector('#paste-button a');
+              if (pasteLink && !pasteLink.hasAttribute('data-i18n')) {
+                pasteLink.setAttribute('data-i18n', 'paste_text');
+                pasteLink.textContent = i18n[currentLang].paste_text;
+              }
+            }
+          });
+        });
+        const pasteButton = document.getElementById('paste-button');
+        if (pasteButton) {
+          observer.observe(pasteButton, { childList: true, subtree: true });
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
