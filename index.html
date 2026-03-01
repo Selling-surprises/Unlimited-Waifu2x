@@ -11,14 +11,14 @@
   <!-- 字体 Inter -->
   <link href="css/Inter.css" rel="stylesheet">
 
-  <!-- 本地 JavaScript 库 (需确保文件存在) -->
+  <!-- 本地 JavaScript 库 -->
   <script src="js/jquery.min.js"></script>
   <script src="js/jquery.cookie.js"></script>
   <script src="js/ort.min.js"></script>
   <script src="js/script.js" charset="utf-8"></script>
 
   <style>
-    /* ----- 全局重置与设计令牌 (保持不变) ----- */
+    /* ----- 全局重置与设计令牌 (保持原风格，新增进度条与固定预览样式) ----- */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -161,6 +161,15 @@
                         linear-gradient(-45deg, #d9e2ec 25%, transparent 25%);
       background-size: 20px 20px;
       background-position: 0 0, 0 10px;
+    }
+
+    /* ---------- 固定输出预览大小，避免突然放大 (移动端友好) ---------- */
+    #dest {
+      max-width: 100%;
+      max-height: 400px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
     }
 
     #src:hover, #dest:hover {
@@ -344,6 +353,30 @@
       background: #b8cdde;
     }
 
+    /* 进度条样式 */
+    #progress-bar {
+      width: 100%;
+      height: 12px;
+      border-radius: 30px;
+      margin: 1rem 0 0.5rem;
+      background-color: #e2e8f0;
+      border: none;
+      overflow: hidden;
+    }
+    #progress-bar::-webkit-progress-bar {
+      background-color: #e2e8f0;
+      border-radius: 30px;
+    }
+    #progress-bar::-webkit-progress-value {
+      background: linear-gradient(90deg, #4b9fd1, #236b97);
+      border-radius: 30px;
+      transition: width 0.2s;
+    }
+    #progress-bar::-moz-progress-bar {
+      background: linear-gradient(90deg, #4b9fd1, #236b97);
+      border-radius: 30px;
+    }
+
     #message {
       grid-column: 1 / -1;
       background: #eef4fa;
@@ -355,10 +388,9 @@
       color: #1a3d62;
       border: 1px solid #ffffff;
       box-shadow: 0 2px 10px #0000000c;
-      margin: 1rem 0 0;
+      margin: 0.5rem 0 0;
     }
 
-    /* 粘贴按钮样式优化 */
     #paste-button a {
       text-decoration: none;
       background: #e9ecf3;
@@ -435,6 +467,11 @@
       #start, #stop {
         width: 100%;
       }
+
+      /* 移动端输出预览更小巧 */
+      #dest {
+        max-height: 250px;
+      }
     }
   </style>
 </head>
@@ -483,9 +520,9 @@
             <td data-i18n="noise_label">🌀 降噪</td>
             <td>
               <select name="noise_level">
-                <!-- 高 (原值2) 显示为 (1) 高，并默认选中；最高 (原值3) 显示为 (2) 最高 -->
-                <option value="2" selected data-i18n="noise_high">(1) 高</option>
-                <option value="3" data-i18n="noise_highest">(2) 最高</option>
+                <!-- 只保留 高(2) 和 最高(3) 符合要求：降噪只保留高和极高 -->
+                <option value="2" data-i18n="noise_high" selected>(2) 高</option>
+                <option value="3" data-i18n="noise_highest">(3) 最高</option>
               </select>
             </td>
           </tr>
@@ -493,7 +530,8 @@
             <td data-i18n="scale_label">🔍 放大</td>
             <td>
               <select name="scale">
-                <option value="2" selected data-i18n="scale_2">2倍</option>
+                <!-- 只保留 2倍 和 4倍 -->
+                <option value="2" data-i18n="scale_2" selected>2倍</option>
                 <option value="4" data-i18n="scale_4">4倍</option>
               </select>
               <span id="scale-comment" class="comment" data-i18n="scale_comment">支持2倍/4倍</span>
@@ -504,6 +542,7 @@
             <td>
               <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
                 <select name="tile_size">
+                  <option value="64">64</option>
                   <option value="256" selected>256</option>
                   <option value="400">400</option>
                   <option value="640">640</option>
@@ -546,6 +585,9 @@
         </table>
       </form>
 
+      <!-- 进度条（默认隐藏） -->
+      <progress id="progress-bar" value="0" max="100" style="display:none;"></progress>
+
       <div id="message" data-i18n="message_ready">( ・∀・) 准备就绪</div>
     </div>
 
@@ -560,7 +602,7 @@
 
   <script>
     (function() {
-      // ---------- 中英文国际化字典 (更新降噪显示文本) ----------
+      // ---------- 中英文国际化字典 (更新 scale_comment 以匹配新的放大选项) ----------
       const i18n = {
         zh: {
           title: "Unlimited Waifu2x",
@@ -577,9 +619,12 @@
           model_swin_art_scan: "🖨 swin_unet / 扫描插画",
           model_swin_photo: "📷 swin_unet / 照片",
           model_cunet_art: "🎨 cunet / 插画",
-          // 降噪：高显示为(1) 高，最高显示为(2) 最高
-          noise_high: "(1) 高",
-          noise_highest: "(2) 最高",
+          noise_none: "(-) 无",        // 虽然选项已移除，但保留键值避免引用错误（实际不会用到）
+          noise_low: "(0) 低",
+          noise_med: "(1) 中",
+          noise_high: "(2) 高",
+          noise_highest: "(3) 最高",
+          scale_1: "1倍",              // 保留键值但不再使用
           scale_2: "2倍",
           scale_4: "4倍",
           tile_random: "随机顺序",
@@ -589,6 +634,7 @@
           start_btn: "开始",
           stop_btn: "停止",
           message_ready: "( ・∀・) 准备就绪",
+          // 更新注释：支持2倍和4倍
           scale_comment: "支持2倍/4倍",
           tile_comment: "推荐256",
           footer_based: "基于",
@@ -611,9 +657,12 @@
           model_swin_art_scan: "🖨 swin_unet / Scanned Illustration",
           model_swin_photo: "📷 swin_unet / Photo",
           model_cunet_art: "🎨 cunet / Illustration",
-          // Noise: High shows as (1) High, Highest shows as (2) Highest
-          noise_high: "(1) High",
-          noise_highest: "(2) Highest",
+          noise_none: "(-) None",
+          noise_low: "(0) Low",
+          noise_med: "(1) Medium",
+          noise_high: "(2) High",
+          noise_highest: "(3) Highest",
+          scale_1: "1x",
           scale_2: "2x",
           scale_4: "4x",
           tile_random: "Random order",
@@ -623,6 +672,7 @@
           start_btn: "Start",
           stop_btn: "Stop",
           message_ready: "( ・∀・) Ready",
+          // 更新英文注释
           scale_comment: "2x/4x supported",
           tile_comment: "256 recommended",
           footer_based: "Based on",
@@ -632,18 +682,15 @@
         }
       };
 
-      let currentLang = 'zh';   // 默认中文
+      let currentLang = 'zh';
 
-      // 切换语言函数
       function switchLang(lang) {
         if (!i18n[lang]) return;
         currentLang = lang;
 
-        // 更新所有带 data-i18n 属性的元素
         document.querySelectorAll('[data-i18n]').forEach(el => {
           const key = el.getAttribute('data-i18n');
           if (i18n[lang][key]) {
-            // 如果是 input 按钮，设置 value；否则设置 textContent
             if (el.tagName === 'INPUT' && (el.type === 'button' || el.type === 'submit')) {
               el.value = i18n[lang][key];
             } else {
@@ -652,7 +699,6 @@
           }
         });
 
-        // 特别处理 #paste-button 内的链接（如果存在，由外部脚本生成）
         const pasteLink = document.querySelector('#paste-button a');
         if (pasteLink) {
           if (!pasteLink.hasAttribute('data-i18n')) {
@@ -661,7 +707,6 @@
           pasteLink.textContent = i18n[lang].paste_text;
         }
 
-        // 切换按钮激活状态
         document.querySelectorAll('.lang-switch button').forEach(btn => {
           const btnLang = btn.getAttribute('data-lang');
           if (btnLang === lang) {
@@ -672,9 +717,7 @@
         });
       }
 
-      // 初始化：绑定语言切换按钮事件
       document.addEventListener('DOMContentLoaded', function() {
-        // 默认激活中文
         switchLang('zh');
 
         document.getElementById('lang-zh').addEventListener('click', function() {
@@ -684,7 +727,6 @@
           switchLang('en');
         });
 
-        // 监听可能动态添加到 #paste-button 的链接
         const observer = new MutationObserver(function(mutations) {
           mutations.forEach(function(mutation) {
             if (mutation.type === 'childList') {
