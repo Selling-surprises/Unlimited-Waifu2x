@@ -29,7 +29,7 @@
 
 1. **访问网站**  
 
-   打开 https://unlimited.waifu2x.net/
+   打开 [https://unlimited.waifu2x.net/](https://selling-surprises.github.io/Unlimited-Waifu2x/)
 
 3. **上传图片**  
 
