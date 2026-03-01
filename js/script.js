@@ -683,7 +683,7 @@ $(function () {
         return blob;
     }
 
-    // 修改后的 process 函数：支持进度条，下载改为按钮
+    // 修改后的 process 函数：支持进度条，完成后显示下载按钮
     async function process(file) {
         if (onnx_runner.running) {
             console.log("Already running");
@@ -776,17 +776,15 @@ $(function () {
                 $("#progress-bar").hide();
                 var output_canvas = $("#dest").get(0);
                 output_canvas.toBlob((blob) => {
-                    // TODO: removeAlpha is not implemented
                     var url = URL.createObjectURL(removeAlpha(blob));
                     var filename = (file.name.split(/(?=\.[^.]+$)/))[0] + "_waifu2x_" + method + ".png";
 
-                    // 根据当前语言获取下载按钮文字
-                    var lang = window.__currentLang || 'zh';
-                    var downloadText = (window.__i18n && window.__i18n[lang] && window.__i18n[lang].download_btn) || '下载';
-                    // 修改为按钮样式
-                    set_message('( ・∀・)つ　<a href="' + url +
-                                '" download="' + filename  +
-                                '" class="download-button">' + downloadText + '</a>', -1, true);
+                    // 根据当前语言决定按钮文字（通过语言切换按钮的激活状态判断）
+                    var isChinese = $('#lang-zh').hasClass('active');
+                    var btnText = isChinese ? '下载' : 'Download';
+                    var downloadHtml = '<a href="' + url + '" download="' + filename + '" class="download-btn">' + btnText + '</a>';
+
+                    set_message('( ・∀・)つ　' + downloadHtml, -1, true);
                 }, "image/png");
             } else {
                 // 如果 stop 触发，回调中已隐藏，这里确保隐藏
@@ -844,7 +842,7 @@ $(function () {
         }
         if (second > 0) {
             setTimeout(() => {
-                if ($("#message").text() == text) {
+                if ($("#message").text() == text || $("#message").html() == text) {
                     $("#message").text("( ・∀・)");
                 }
             }, second * 1000);
@@ -927,28 +925,211 @@ $(function () {
         onnx_runner.stop_flag = true;
     });
 
-    // 移除原图点击放大功能（注释掉）
-    // $("#src").click(() => {
-    //     var img = $("#src").get(0);
-    //     var css_width = parseInt($("#src").css("width"));
-    //     if (css_width != img.naturalWidth) {
-    //         $("#src").css({width: img.naturalWidth, height: img.naturalHeight});
-    //     } else {
-    //         var height = 128;
-    //         var width = Math.floor((height / img.naturalHeight) * img.naturalWidth);
-    //         $("#src").css({width: width, height: height});
-    //     }
-    // });
+    // ==================== 增强灯箱预览（支持缩放拖动，适配移动端，增加滚轮缩放） ====================
+    function initLightbox() {
+        if ($('#lightbox').length) return;
 
-    $("#dest").click(() => {
-        var width = $("#dest").css("width");
-        var canvas = $("#dest").get(0);
-        if (width == "auto" || parseInt(width) == canvas.width) {
-            $("#dest").css({"width": "60%", "height": "auto"});
-        } else {
-            $("#dest").css({"width": "auto", "height": "auto"});
+        var lightbox = $('<div id="lightbox" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; flex-direction:column; justify-content:center; align-items:center;"></div>');
+        var container = $('<div id="lightbox-container" style="position:relative; width:100%; height:100%; overflow:hidden; display:flex; justify-content:center; align-items:center;"></div>');
+        var img = $('<img id="lightbox-img" style="max-width:100%; max-height:100%; transform-origin:center; transition:transform 0.1s; cursor:grab; user-select:none;">');
+        var controls = $('<div id="lightbox-controls" style="position:absolute; bottom:30px; left:0; width:100%; text-align:center; z-index:2010; display:flex; gap:20px; justify-content:center; pointer-events:none;"></div>');
+        var closeBtn = $('<button style="pointer-events:auto; background:white; border:none; border-radius:50%; width:48px; height:48px; font-size:24px; line-height:48px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.3);">×</button>');
+        var zoomInBtn = $('<button style="pointer-events:auto; background:white; border:none; border-radius:50%; width:48px; height:48px; font-size:24px; line-height:48px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.3);">+</button>');
+        var zoomOutBtn = $('<button style="pointer-events:auto; background:white; border:none; border-radius:50%; width:48px; height:48px; font-size:24px; line-height:48px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.3);">−</button>');
+        var resetBtn = $('<button style="pointer-events:auto; background:white; border:none; border-radius:50%; width:48px; height:48px; font-size:20px; line-height:48px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.3);">↺</button>');
+
+        controls.append(zoomOutBtn, resetBtn, zoomInBtn, closeBtn);
+        container.append(img);
+        lightbox.append(container, controls);
+        $('body').append(lightbox);
+
+        // 状态变量
+        var scale = 1;
+        var translateX = 0;
+        var translateY = 0;
+        var isDragging = false;
+        var startX, startY;
+        var initialPinchDist = null;
+        var lastScale = 1;
+
+        // 更新图片变换
+        function updateTransform() {
+            img.css('transform', `translate(${translateX}px, ${translateY}px) scale(${scale})`);
+        }
+
+        // 重置视图
+        function resetView() {
+            scale = 1;
+            translateX = 0;
+            translateY = 0;
+            updateTransform();
+        }
+
+        // 缩放（基于中心）
+        function zoom(factor) {
+            var newScale = scale * factor;
+            newScale = Math.min(5, Math.max(0.5, newScale));
+            scale = newScale;
+            updateTransform();
+        }
+
+        // 以鼠标位置为中心缩放（滚轮用）
+        function zoomAt(factor, mouseX, mouseY) {
+            // 使用 getBoundingClientRect 获取容器相对于视口的位置
+            var rect = container[0].getBoundingClientRect();
+            // 鼠标相对于容器的坐标
+            var containerMouseX = mouseX - rect.left;
+            var containerMouseY = mouseY - rect.top;
+
+            // 计算当前鼠标位置在图片未缩放前的相对坐标（考虑平移和缩放）
+            var imgX = (containerMouseX - translateX) / scale;
+            var imgY = (containerMouseY - translateY) / scale;
+
+            // 应用缩放因子
+            var newScale = scale * factor;
+            newScale = Math.min(5, Math.max(0.5, newScale));
+
+            // 计算新的平移，使得鼠标下的点保持不变
+            var newTranslateX = containerMouseX - imgX * newScale;
+            var newTranslateY = containerMouseY - imgY * newScale;
+
+            // 应用新值
+            scale = newScale;
+            translateX = newTranslateX;
+            translateY = newTranslateY;
+
+            updateTransform();
+        }
+
+        // 鼠标/触摸事件
+        img.on('mousedown', function(e) {
+            e.preventDefault();
+            isDragging = true;
+            startX = e.clientX - translateX;
+            startY = e.clientY - translateY;
+            img.css('cursor', 'grabbing');
+        });
+
+        $(document).on('mousemove', function(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+            updateTransform();
+        });
+
+        $(document).on('mouseup', function() {
+            if (isDragging) {
+                isDragging = false;
+                img.css('cursor', 'grab');
+            }
+        });
+
+        // 触摸事件（移动端）
+        img.on('touchstart', function(e) {
+            e.preventDefault();
+            var touches = e.originalEvent.touches;
+            if (touches.length === 1) {
+                // 单指拖动
+                isDragging = true;
+                startX = touches[0].clientX - translateX;
+                startY = touches[0].clientY - translateY;
+            } else if (touches.length === 2) {
+                // 双指缩放开始
+                isDragging = false;
+                var dx = touches[0].clientX - touches[1].clientX;
+                var dy = touches[0].clientY - touches[1].clientY;
+                initialPinchDist = Math.sqrt(dx*dx + dy*dy);
+                lastScale = scale;
+            }
+        });
+
+        img.on('touchmove', function(e) {
+            e.preventDefault();
+            var touches = e.originalEvent.touches;
+            if (touches.length === 1 && isDragging) {
+                translateX = touches[0].clientX - startX;
+                translateY = touches[0].clientY - startY;
+                updateTransform();
+            } else if (touches.length === 2 && initialPinchDist !== null) {
+                var dx = touches[0].clientX - touches[1].clientX;
+                var dy = touches[0].clientY - touches[1].clientY;
+                var dist = Math.sqrt(dx*dx + dy*dy);
+                var factor = dist / initialPinchDist;
+                var newScale = lastScale * factor;
+                newScale = Math.min(5, Math.max(0.5, newScale));
+                scale = newScale;
+                updateTransform();
+            }
+        });
+
+        img.on('touchend', function(e) {
+            if (e.originalEvent.touches.length === 0) {
+                isDragging = false;
+                initialPinchDist = null;
+            } else if (e.originalEvent.touches.length === 1) {
+                isDragging = true;
+                var touch = e.originalEvent.touches[0];
+                startX = touch.clientX - translateX;
+                startY = touch.clientY - translateY;
+                initialPinchDist = null;
+            }
+        });
+
+        // 按钮事件
+        zoomInBtn.click(function() { zoom(1.2); });
+        zoomOutBtn.click(function() { zoom(0.8); });
+        resetBtn.click(resetView);
+        closeBtn.click(function() { lightbox.hide(); resetView(); });
+
+        // 点击遮罩关闭
+        lightbox.click(function(e) {
+            if (e.target === this) {
+                lightbox.hide();
+                resetView();
+            }
+        });
+
+        // ========== 修复：使用原生 addEventListener 并设置 passive: false，使滚轮缩放生效 ==========
+        const wheelHandler = function(e) {
+            e.preventDefault();
+            var delta = e.deltaY > 0 ? 0.9 : 1.1; // 向下滚缩小，向上滚放大
+            zoomAt(delta, e.clientX, e.clientY);
+        };
+        container[0].addEventListener('wheel', wheelHandler, { passive: false });
+        // ========== 修复结束 ==========
+
+        // 保存状态供外部使用
+        lightbox.data('img', img);
+        lightbox.data('reset', resetView);
+    }
+    initLightbox();
+
+    // 显示灯箱
+    function showLightbox(src) {
+        var lightbox = $('#lightbox');
+        var img = lightbox.data('img');
+        img.attr('src', src);
+        lightbox.show().css('display', 'flex');
+        // 重置视图
+        lightbox.data('reset')();
+    }
+
+    // 修改点击预览行为：使用灯箱
+    $("#src").click(() => {
+        var img = $("#src").get(0);
+        if (img.src && !img.src.endsWith("blank.png")) {
+            showLightbox(img.src);
         }
     });
+    $("#dest").click(() => {
+        var canvas = $("#dest").get(0);
+        if (canvas.width > 0 && canvas.height > 0) {
+            var dataURL = canvas.toDataURL("image/png");
+            showLightbox(dataURL);
+        }
+    });
+    // ==================== 灯箱预览结束 ====================
 
     function restore_from_cookie()
     {
