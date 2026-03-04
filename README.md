@@ -6,7 +6,7 @@
 
 **当前网页复刻了（unlimited.waifu2x.net）并精简了一些模型。**
 
-与原版 Waifu2x（www.waifu2x.net）相比，**Unlimited 版本的主要优势**：
+与原版 Waifu2x（waifu2x.net）相比，**Unlimited 版本的主要优势**：
 - ✅ **无文件大小限制**（原版限制5MB）
 - ✅ **支持 4 倍放大**（原版在线版仅支持2倍）
 - ✅ **本地浏览器处理**，不上传服务器，隐私更安全
