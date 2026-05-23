@@ -4,27 +4,19 @@
   <meta charset="utf-8">
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=yes">
-  <meta http-equiv="origin-trial" content="AtqtRAXYLZl1zcz0JLoU4VkI/ei1/Mkrc7W7aTjejM7JaYxZMCLGoRt/HEpK2F1qyzpXZYScyazHc9rr6uWk5wkAAAB/eyJvcmlnaW4iOiJodHRwczovL3VubGltaXRlZC53YWlmdTJ4Lm5ldDo0NDMiLCJmZWF0dXJlIjoiVW5yZXN0cmljdGVkU2hhcmVkQXJyYXlCdWZmZXIiLCJleHBpcnkiOjE3Mzk5MjMxOTksImlzU3ViZG9tYWluIjp0cnVlfQ==">
   <link rel="icon" href="favicon.ico">
   <title>Unlimited Waifu2x</title>
-
-  <!-- 字体 Inter -->
   <link href="css/Inter.css" rel="stylesheet">
-
-  <!-- 本地 JavaScript 库 -->
   <script src="js/jquery.min.js"></script>
   <script src="js/jquery.cookie.js"></script>
   <script src="js/ort.min.js"></script>
   <script src="js/script.js" charset="utf-8"></script>
-
   <style>
-    /* ----- 全局重置与设计令牌 (保持原风格，新增进度条与固定预览样式) ----- */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
     body {
       font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       background: #f4f7fb;
@@ -36,12 +28,10 @@
       flex-direction: column;
       align-items: center;
     }
-
     .app-container {
       max-width: 1400px;
       width: 100%;
     }
-
     h1 {
       font-weight: 600;
       font-size: 2.2rem;
@@ -53,7 +43,6 @@
       margin-bottom: 0.25rem;
       text-align: center;
     }
-
     .subhead {
       text-align: center;
       font-size: 0.95rem;
@@ -65,7 +54,6 @@
       align-items: center;
       gap: 0.75rem;
     }
-
     .lang-switch {
       display: flex;
       gap: 0.5rem;
@@ -91,16 +79,6 @@
       color: white;
       border-color: #1b4c6e;
     }
-
-    .subhead .comment {
-      background: #e9eef3;
-      padding: 0.2rem 0.8rem;
-      border-radius: 30px;
-      font-size: 0.85rem;
-      color: #1e3a5f;
-    }
-
-    /* 主面板网格 */
     #main-panel {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -108,7 +86,6 @@
       background: transparent;
       margin: 2rem 0 1.5rem;
     }
-
     #src-box, #dest-box {
       background: white;
       border-radius: 28px;
@@ -120,12 +97,6 @@
       border: 1px solid #ffffff50;
       backdrop-filter: blur(2px);
     }
-
-    #src-box:hover, #dest-box:hover {
-      box-shadow: 0 25px 45px -12px rgba(0,40,70,0.3);
-    }
-
-    /* 移除伪元素，改用实标签（支持国际化） */
     .box-label {
       font-size: 0.9rem;
       font-weight: 500;
@@ -135,7 +106,6 @@
       margin-bottom: 0.75rem;
       display: block;
     }
-
     #src, #dest {
       width: 100%;
       height: auto;
@@ -151,8 +121,6 @@
       background-size: 20px 20px;
       background-position: 0 0, 0 10px;
     }
-
-    /* 固定输出预览大小，避免突然放大 (移动端友好) */
     #dest {
       max-width: 100%;
       max-height: 400px;
@@ -160,12 +128,6 @@
       height: auto;
       object-fit: contain;
     }
-
-    /* 移除 pointer 变化，不再支持点击切换大小（预览改为新窗口） */
-    #src, #dest {
-      cursor: pointer;
-    }
-
     #form-box {
       grid-column: 1 / -1;
       background: #ffffffdd;
@@ -176,18 +138,16 @@
       box-shadow: 0 20px 40px -18px #1e293b40, 0 8px 20px -8px #00000010;
       padding: 2rem 2rem 1.8rem;
       margin-top: 0.5rem;
+      overflow-x: auto;
     }
-
     #form-box table {
       width: 100%;
       display: block;
       border-collapse: collapse;
     }
-
     #form-box tbody {
       display: block;
     }
-
     #form-box tr {
       display: flex;
       flex-wrap: wrap;
@@ -197,13 +157,11 @@
       border-bottom: 1px dashed #dde7f0;
       padding-bottom: 0.8rem;
     }
-
     #form-box tr:last-child {
       border-bottom: none;
       margin-bottom: 0;
       padding-bottom: 0;
     }
-
     #form-box td:first-child {
       font-weight: 550;
       color: #1e3a5f;
@@ -213,36 +171,20 @@
       background: #ecf3f9;
       padding: 0.4rem 1rem;
       border-radius: 40px;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       width: auto;
       box-shadow: inset 0 1px 3px #ffffff, 0 2px 4px #00000008;
     }
-
     #form-box td:last-child {
       flex: 1;
-      min-width: 260px;
+      min-width: 200px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       gap: 0.8rem;
     }
-
-    #form-box tr:has(td[colspan="2"]) {
-      display: flex;
-      justify-content: center;
-      border-bottom: none;
-      padding-top: 1rem;
-    }
-
-    #form-box tr:has(td[colspan="2"]) td {
-      min-width: auto;
-      background: transparent;
-      box-shadow: none;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-
     select, input[type="file"], input[type="checkbox"] {
       background: white;
       border: 1px solid #cbd5e1;
@@ -255,9 +197,14 @@
       cursor: pointer;
       box-shadow: 0 2px 4px #00000008;
     }
-
+    input[type="file"] {
+      max-width: 100%;
+      flex: 1 1 auto;
+      white-space: normal;
+      word-break: keep-all;
+    }
     select {
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2334495e" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>');
+      background-image: url('data:image/svg+xml;utf8,http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2334495e" stroke-width="2">');
       background-repeat: no-repeat;
       background-position: right 1rem center;
       background-size: 1.2rem;
@@ -265,34 +212,6 @@
       -webkit-appearance: none;
       padding-right: 2.8rem;
     }
-
-    input[type="file"] {
-      padding: 0.4rem 0.8rem;
-      width: auto;
-      max-width: 280px;
-    }
-
-    select:hover, input[type="file"]:hover {
-      border-color: #7b9ab9;
-      background-color: #fafdff;
-    }
-
-    label {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      color: #2c3e5c;
-      font-size: 0.95rem;
-    }
-
-    input[type="checkbox"] {
-      width: 1.2rem;
-      height: 1.2rem;
-      border-radius: 6px;
-      padding: 0;
-      margin: 0;
-    }
-
     .comment {
       font-size: 0.85rem;
       color: #6d8aac;
@@ -301,25 +220,19 @@
       border-radius: 30px;
       white-space: nowrap;
     }
-
-    #scale-comment, #tile-comment {
-      margin-left: 0.2rem;
-    }
-
     #button-box {
       display: flex;
       gap: 1rem;
       justify-content: center;
       flex-wrap: wrap;
     }
-
     #start, #stop {
       border: none;
       background: #1b4c6e;
       color: white;
       font-weight: 550;
       font-size: 1.2rem;
-      padding: 0.8rem 2.8rem;
+      padding: 0.8rem 2rem;
       border-radius: 60px;
       cursor: pointer;
       transition: 0.15s;
@@ -327,24 +240,13 @@
       letter-spacing: 0.01em;
       border: 1px solid #ffffff30;
     }
-
     #stop {
       background: #a0b8cc;
       color: #1e2f40;
       box-shadow: 0 4px 12px #0000001a;
     }
-
-    #start:hover {
-      background: #236b97;
-      transform: scale(1.02);
-    }
-
-    #stop:hover {
-      background: #b8cdde;
-    }
-
-    /* 进度条样式 */
     #progress-bar {
+      grid-column: 1 / -1;
       width: 100%;
       height: 12px;
       border-radius: 30px;
@@ -352,6 +254,7 @@
       background-color: #e2e8f0;
       border: none;
       overflow: hidden;
+      display: none;
     }
     #progress-bar::-webkit-progress-bar {
       background-color: #e2e8f0;
@@ -366,7 +269,6 @@
       background: linear-gradient(90deg, #4b9fd1, #236b97);
       border-radius: 30px;
     }
-
     #message {
       grid-column: 1 / -1;
       background: #eef4fa;
@@ -385,43 +287,6 @@
       justify-content: center;
       gap: 0.8rem;
     }
-
-    /* 下载按钮样式 */
-    .download-btn {
-      display: inline-block;
-      background: #1b4c6e;
-      color: white;
-      font-weight: 550;
-      font-size: 1.1rem;
-      padding: 0.5rem 1.8rem;
-      border-radius: 60px;
-      text-decoration: none;
-      border: 1px solid #ffffff40;
-      box-shadow: 0 4px 12px rgba(0,30,50,0.3);
-      transition: 0.15s;
-      cursor: pointer;
-    }
-    .download-btn:hover {
-      background: #236b97;
-      transform: scale(1.02);
-    }
-
-    #paste-button a {
-      text-decoration: none;
-      background: #e9ecf3;
-      padding: 2px 8px;
-      border-radius: 20px;
-      color: #1e3a5f;
-      font-size: 0.9rem;
-      border: 1px solid #cbd5e1;
-      transition: 0.1s;
-      margin: 0 2px;
-    }
-
-    #paste-button a:hover {
-      background: #d0ddee;
-    }
-
     #footer {
       margin-top: 3rem;
       padding: 2rem 1rem 1rem;
@@ -434,338 +299,345 @@
       justify-content: center;
       gap: 1.5rem 3rem;
     }
-
     #footer a {
       color: #1d4e7c;
       text-decoration: none;
       font-weight: 500;
       border-bottom: 1px dotted #9bb7d4;
     }
-
-    #footer a:hover {
-      color: #0a2a44;
-    }
-
-    @media (max-width: 850px) {
-      #main-panel {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-
-      #form-box tr {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      #form-box td:first-child {
-        width: auto;
-      }
-
-      #form-box td:last-child {
-        width: 100%;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      body {
-        padding: 1rem 0.5rem;
-      }
-
-      #form-box {
-        padding: 1.5rem 1rem;
-      }
-
-      #start, #stop {
-        width: 100%;
-      }
-
-      /* 移动端输出预览更小巧 */
-      #dest {
-        max-height: 250px;
-      }
+    @media (max-width: 640px) {
+      #form-box td:first-child { min-width: 120px; }
+      #form-box td:last-child { min-width: 160px; }
+      .comment { white-space: normal; }
     }
   </style>
 </head>
 <body>
-  <div class="app-container">
-    <h1 data-i18n="title">Unlimited Waifu2x</h1>
-    <div class="subhead">
-      <span data-i18n="subhead">⚡ 浏览器端二次元放大 · 完全本地处理</span>
-      <div class="lang-switch">
-        <button id="lang-zh" data-lang="zh" class="active">中文</button>
-        <button id="lang-en" data-lang="en">English</button>
-      </div>
+<div class="app-container">
+  <h1 data-i18n="title">Unlimited Waifu2x</h1>
+  <div class="subhead">
+    <span data-i18n="subhead">⚡ 浏览器端二次元放大 · 完全本地处理</span>
+    <div class="lang-switch">
+      <button id="lang-zh" data-lang="zh" class="active">中文</button>
+      <button id="lang-en" data-lang="en">English</button>
+    </div>
+  </div>
+
+  <div id="main-panel">
+    <div id="src-box">
+      <div class="box-label" data-i18n="src_label">🖼️ 原图</div>
+      <img id="src" src="blank.png" alt="源图像">
+    </div>
+    <div id="dest-box">
+      <div class="box-label" data-i18n="dest_label">✨ 输出</div>
+      <canvas id="dest"></canvas>
     </div>
 
-    <div id="main-panel">
-      <div id="src-box">
-        <!-- 改用实标签支持国际化，内容由i18n填充 -->
-        <div class="box-label" data-i18n="src_label">🖼️ 原图</div>
-        <img id="src" src="blank.png" alt="源图像">
-      </div>
-
-      <div id="dest-box">
-        <div class="box-label" data-i18n="dest_label">✨ 输出</div>
-        <canvas id="dest"></canvas>
-      </div>
-
-      <form id="form-box">
-        <table>
+    <form id="form-box">
+      <table>
+        <tbody>
           <tr>
-            <td>
-              <span data-i18n="file_emoji_label">📂 文件</span><span>(</span><span data-i18n="drag_text">拖拽</span><span id="paste-button"></span><span>)</span>
-            </td>
-            <td>
-              <input type="file" id="file" name="file" accept="image/*">
-            </td>
+            <td><span data-i18n="file_emoji_label">📂 文件</span><span>(<span data-i18n="drag_text">拖拽</span>)</span></td>
+            <td><input type="file" id="file" name="file" accept="image/*"></td>
           </tr>
           <tr>
-            <td data-i18n="model_label">🧠 模型</td>
+            <td style="display: inline-flex; align-items: center; gap: 0.5rem;">
+              <span data-i18n="model_label">🧠 模型</span>
+             </td>
             <td>
-              <select name="model">
+              <select name="model" style="flex: 1 1 auto;">
                 <option value="swin_unet.art" selected data-i18n="model_swin_art">🎨 swin_unet / 插画</option>
                 <option value="swin_unet.art_scan" data-i18n="model_swin_art_scan">🖨 swin_unet / 扫描插画</option>
                 <option value="swin_unet.photo" data-i18n="model_swin_photo">📷 swin_unet / 照片</option>
                 <option value="cunet.art" data-i18n="model_cunet_art">🎨 cunet / 插画</option>
               </select>
-            </td>
-          </tr>
-          <tr>
+             </td>
+           </tr>
+           <tr>
             <td data-i18n="noise_label">🌀 降噪</td>
-            <td>
-              <select name="noise_level">
+            <td><select name="noise_level">
                 <option value="-1" data-i18n="noise_none">(-) 无</option>
                 <option value="0" selected data-i18n="noise_low">(0) 低</option>
                 <option value="1" data-i18n="noise_med">(1) 中</option>
                 <option value="2" data-i18n="noise_high">(2) 高</option>
                 <option value="3" data-i18n="noise_highest">(3) 最高</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
+            </select></td>
+           </tr>
+           <tr>
             <td data-i18n="scale_label">🔍 放大</td>
-            <td>
-              <select name="scale">
+            <td><select name="scale">
                 <option value="1" data-i18n="scale_1">1倍</option>
                 <option value="2" selected data-i18n="scale_2">2倍</option>
                 <option value="4" data-i18n="scale_4">4倍</option>
               </select>
               <span id="scale-comment" class="comment" data-i18n="scale_comment">不支持4倍</span>
             </td>
-          </tr>
-          <tr>
+           </tr>
+           <tr>
             <td data-i18n="tile_label">🧩 分块</td>
-            <td>
-              <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+            <td><div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
                 <select name="tile_size">
                   <option value="64">64</option>
                   <option value="256" selected>256</option>
                   <option value="400">400</option>
                   <option value="640">640</option>
                 </select>
-                <label>
-                  <input type="checkbox" name="tile_random" data-i18n-key="tile_random_checkbox"> <span data-i18n="tile_random">随机顺序</span>
-                </label>
+                <label><input type="checkbox" name="tile_random"> <span data-i18n="tile_random">随机顺序</span></label>
               </div>
               <span id="tile-comment" class="comment" data-i18n="tile_comment">推荐256</span>
             </td>
-          </tr>
-          <tr>
+           </tr>
+           <tr>
             <td data-i18n="tta_label">🔄 测试增强 (TTA)</td>
-            <td>
-              <select name="tta">
-                <option value="0" selected>0</option>
-                <option value="2">2</option>
-                <option value="4">4</option>
-              </select>
+            <td><select name="tta"><option value="0" selected>0</option><option value="2">2</option><option value="4">4</option></select>
               <span style="color:#4b6584;" data-i18n="tta_integrated">集成</span>
             </td>
-          </tr>
-          <tr>
+           </tr>
+           <tr>
             <td data-i18n="alpha_label">🎭 透明通道</td>
-            <td>
-              <select name="alpha">
-                <option value="1" data-i18n="alpha_auto">自动</option>
-                <option value="0" selected data-i18n="alpha_disable">禁用</option>
-              </select>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <div id="button-box">
+            <td><select name="alpha"><option value="1" data-i18n="alpha_auto">自动</option><option value="0" selected data-i18n="alpha_disable">禁用</option></select></td>
+           </tr>
+           <tr>
+            <td colspan="2"><div id="button-box">
                 <input type="button" id="start" value="开始" data-i18n="start_btn">
                 <input type="button" id="stop" value="停止" data-i18n="stop_btn">
-              </div>
-            </td>
-          </tr>
-        </table>
-      </form>
+              </div></td>
+           </tr>
+        </tbody>
+      </table>
+    </form>
 
-      <!-- 进度条（默认隐藏） -->
-      <progress id="progress-bar" value="0" max="100" style="display:none;"></progress>
-
-      <div id="message" data-i18n="message_ready">( ・∀・) 准备就绪</div>
-    </div>
-
-    <div id="footer">
-      <div>
-        <span data-i18n="footer_based">基于</span> 
-        <a href="https://github.com/nagadomi/nunif" target="_blank" rel="noopener" data-i18n="footer_link">nunif/waifu2x/unlimited_waifu2x 代码</a>
-      </div>
-      <div><a href="privacy_policy.txt" data-i18n="footer_privacy">隐私政策</a></div>
-    </div>
+    <progress id="progress-bar" value="0" max="100"></progress>
+    <div id="message" data-i18n="message_ready">( ・∀・) 准备就绪</div>
   </div>
 
-  <script>
-    (function() {
-      // ---------- 中英文国际化字典 (增加 src_label / dest_label) ----------
-      const i18n = {
-        zh: {
-          title: "Unlimited Waifu2x",
-          subhead: "⚡ 浏览器端二次元放大 · 完全本地处理",
-          src_label: "🖼️ 原图",          // 新增
-          dest_label: "✨ 输出",         // 新增
-          file_emoji_label: "📂 文件",
-          drag_text: "拖拽",
-          model_label: "🧠 模型",
-          noise_label: "🌀 降噪",
-          scale_label: "🔍 放大",
-          tile_label: "🧩 分块",
-          tta_label: "🔄 测试增强 (TTA)",
-          alpha_label: "🎭 透明通道",
-          model_swin_art: "🎨 swin_unet / 插画",
-          model_swin_art_scan: "🖨 swin_unet / 扫描插画",
-          model_swin_photo: "📷 swin_unet / 照片",
-          model_cunet_art: "🎨 cunet / 插画",
-          noise_none: "(-) 无",
-          noise_low: "(0) 低",
-          noise_med: "(1) 中",
-          noise_high: "(2) 高",
-          noise_highest: "(3) 最高",
-          scale_1: "1倍",
-          scale_2: "2倍",
-          scale_4: "4倍",
-          tile_random: "随机顺序",
-          tta_integrated: "集成",
-          alpha_auto: "自动",
-          alpha_disable: "禁用",
-          start_btn: "开始",
-          stop_btn: "停止",
-          message_ready: "( ・∀・) 准备就绪",
-          scale_comment: "不支持4倍",
-          tile_comment: "推荐256",
-          footer_based: "基于",
-          footer_link: "nunif/waifu2x/unlimited_waifu2x 代码",
-          footer_privacy: "隐私政策",
-          paste_text: "粘贴",
-        },
-        en: {
-          title: "Unlimited Waifu2x",
-          subhead: "⚡ Browser-side anime upscaling · Fully local",
-          src_label: "🖼️ Original",       // 新增
-          dest_label: "✨ Output",         // 新增
-          file_emoji_label: "📂 File",
-          drag_text: "drag",
-          model_label: "🧠 Model",
-          noise_label: "🌀 Noise Reduction",
-          scale_label: "🔍 Scale",
-          tile_label: "🧩 Tile",
-          tta_label: "🔄 TTA",
-          alpha_label: "🎭 Alpha",
-          model_swin_art: "🎨 swin_unet / Illustration",
-          model_swin_art_scan: "🖨 swin_unet / Scanned Illustration",
-          model_swin_photo: "📷 swin_unet / Photo",
-          model_cunet_art: "🎨 cunet / Illustration",
-          noise_none: "(-) None",
-          noise_low: "(0) Low",
-          noise_med: "(1) Medium",
-          noise_high: "(2) High",
-          noise_highest: "(3) Highest",
-          scale_1: "1x",
-          scale_2: "2x",
-          scale_4: "4x",
-          tile_random: "Random order",
-          tta_integrated: "integrated",
-          alpha_auto: "Auto",
-          alpha_disable: "Disabled",
-          start_btn: "Start",
-          stop_btn: "Stop",
-          message_ready: "( ・∀・) Ready",
-          scale_comment: "4x not supported",
-          tile_comment: "256 recommended",
-          footer_based: "Based on",
-          footer_link: "nunif/waifu2x/unlimited_waifu2x code",
-          footer_privacy: "Privacy Policy",
-          paste_text: "paste",
-        }
-      };
+  <div id="footer">
+    <div><span data-i18n="footer_based">基于</span><a href="https://github.com/nagadomi/nunif" id="external-github-link" target="_blank" rel="noopener" data-i18n="footer_link">nunif/waifu2x/unlimited_waifu2x 代码</a></div>
+    <div><a href="privacy_policy.txt" data-i18n="footer_privacy">隐私政策</a></div>
+  </div>
+</div>
 
-      let currentLang = 'zh';
-
-      function switchLang(lang) {
-        if (!i18n[lang]) return;
-        currentLang = lang;
-
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-          const key = el.getAttribute('data-i18n');
-          if (i18n[lang][key]) {
-            if (el.tagName === 'INPUT' && (el.type === 'button' || el.type === 'submit')) {
-              el.value = i18n[lang][key];
-            } else {
-              el.textContent = i18n[lang][key];
-            }
-          }
-        });
-
-        const pasteLink = document.querySelector('#paste-button a');
-        if (pasteLink) {
-          if (!pasteLink.hasAttribute('data-i18n')) {
-            pasteLink.setAttribute('data-i18n', 'paste_text');
-          }
-          pasteLink.textContent = i18n[lang].paste_text;
-        }
-
-        document.querySelectorAll('.lang-switch button').forEach(btn => {
-          const btnLang = btn.getAttribute('data-lang');
-          if (btnLang === lang) {
-            btn.classList.add('active');
-          } else {
-            btn.classList.remove('active');
-          }
-        });
+<script>
+  // ==================== 国际化 ====================
+  const i18n = {
+    zh: {
+      title: "Unlimited Waifu2x", subhead: "⚡ 浏览器端二次元放大 · 完全本地处理",
+      src_label: "🖼️ 原图", dest_label: "✨ 输出", file_emoji_label: "📂 文件", drag_text: "拖拽",
+      model_label: "🧠 模型", noise_label: "🌀 降噪", scale_label: "🔍 放大", tile_label: "🧩 分块",
+      tta_label: "🔄 测试增强 (TTA)", alpha_label: "🎭 透明通道",
+      model_swin_art: "🎨 swin_unet / 插画", model_swin_art_scan: "🖨 swin_unet / 扫描插画",
+      model_swin_photo: "📷 swin_unet / 照片", model_cunet_art: "🎨 cunet / 插画",
+      noise_none: "(-) 无", noise_low: "(0) 低", noise_med: "(1) 中", noise_high: "(2) 高", noise_highest: "(3) 最高",
+      scale_1: "1倍", scale_2: "2倍", scale_4: "4倍", tile_random: "随机顺序", tta_integrated: "集成",
+      alpha_auto: "自动", alpha_disable: "禁用", start_btn: "开始", stop_btn: "停止",
+      message_ready: "( ・∀・) 准备就绪", scale_comment: "不支持4倍", tile_comment: "推荐256",
+      footer_based: "基于", footer_link: "nunif/waifu2x/unlimited_waifu2x 代码", footer_privacy: "隐私政策",
+    },
+    en: {
+      title: "Unlimited Waifu2x", subhead: "⚡ Browser-side anime upscaling · Fully local",
+      src_label: "🖼️ Original", dest_label: "✨ Output", file_emoji_label: "📂 File", drag_text: "drag",
+      model_label: "🧠 Model", noise_label: "🌀 Noise Reduction", scale_label: "🔍 Scale", tile_label: "🧩 Tile",
+      tta_label: "🔄 TTA", alpha_label: "🎭 Alpha",
+      model_swin_art: "🎨 swin_unet / Illustration", model_swin_art_scan: "🖨 swin_unet / Scanned",
+      model_swin_photo: "📷 swin_unet / Photo", model_cunet_art: "🎨 cunet / Illustration",
+      noise_none: "(-) None", noise_low: "(0) Low", noise_med: "(1) Medium", noise_high: "(2) High", noise_highest: "(3) Highest",
+      scale_1: "1x", scale_2: "2x", scale_4: "4x", tile_random: "Random order", tta_integrated: "integrated",
+      alpha_auto: "Auto", alpha_disable: "Disabled", start_btn: "Start", stop_btn: "Stop",
+      message_ready: "( ・∀・) Ready", scale_comment: "4x not supported", tile_comment: "256 recommended",
+      footer_based: "Based on", footer_link: "nunif/waifu2x/unlimited_waifu2x code", footer_privacy: "Privacy Policy",
+    }
+  };
+  let currentLang = 'zh';
+  function switchLang(lang) {
+    if (!i18n[lang]) return;
+    currentLang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (i18n[lang][key]) {
+        if (el.tagName === 'INPUT' && (el.type === 'button' || el.type === 'submit')) el.value = i18n[lang][key];
+        else el.textContent = i18n[lang][key];
       }
-
-      document.addEventListener('DOMContentLoaded', function() {
-        switchLang('zh');
-
-        document.getElementById('lang-zh').addEventListener('click', function() {
-          switchLang('zh');
-        });
-        document.getElementById('lang-en').addEventListener('click', function() {
-          switchLang('en');
-        });
-
-        const observer = new MutationObserver(function(mutations) {
-          mutations.forEach(function(mutation) {
-            if (mutation.type === 'childList') {
-              const pasteLink = document.querySelector('#paste-button a');
-              if (pasteLink && !pasteLink.hasAttribute('data-i18n')) {
-                pasteLink.setAttribute('data-i18n', 'paste_text');
-                pasteLink.textContent = i18n[currentLang].paste_text;
-              }
-            }
-          });
-        });
-        const pasteButton = document.getElementById('paste-button');
-        if (pasteButton) {
-          observer.observe(pasteButton, { childList: true, subtree: true });
+    });
+    document.querySelectorAll('.lang-switch button').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+  }
+  
+  // 简单的复制功能（无提示）
+  function copyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(() => {});
+    } else {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      try { document.execCommand('copy'); } catch(e) {}
+      document.body.removeChild(textarea);
+    }
+  }
+  
+  // 外部链接打开（普通浏览器行为，无弹窗）
+  function openExternalUrl(url) {
+    window.open(url, '_blank', 'noopener noreferrer');
+  }
+  
+  // 简单的下载辅助（浏览器原生下载，无弹窗提示）
+  if (typeof window.downloadFile === 'undefined') {
+    window.downloadFile = function(source, suggestedName) {
+      try {
+        let blob = null;
+        let finalName = suggestedName || `download_${Date.now()}.png`;
+        const processBlob = (blobData) => {
+          const url = URL.createObjectURL(blobData);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = finalName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        };
+        if (source instanceof Blob) {
+          blob = source;
+          processBlob(blob);
+        } else if (typeof source === 'string' && (source.startsWith('blob:') || source.startsWith('data:'))) {
+          const a = document.createElement('a');
+          a.href = source;
+          a.download = finalName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        } else if (typeof source === 'string') {
+          fetch(source, { cache: 'no-store' })
+            .then(res => res.blob())
+            .then(blobData => processBlob(blobData))
+            .catch(() => {});
+        } else {
+          throw new Error('unsupported source');
         }
+      } catch(e) {}
+    };
+  }
+  
+  // 重置所有弹窗相关逻辑：服务弹窗移除，模型帮助移除，下载接管移除等
+  // 修复底部链接使用普通打开方式
+  (function fixFooterLink() {
+    const githubLink = document.getElementById('external-github-link');
+    if(githubLink) {
+      const newLink = githubLink.cloneNode(true);
+      githubLink.parentNode.replaceChild(newLink, githubLink);
+      newLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        openExternalUrl(newLink.href);
       });
-    })();
-  </script>
+    }
+    const privacyLink = document.querySelector('#footer a[href="privacy_policy.txt"]');
+    if(privacyLink) {
+      privacyLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        openExternalUrl(privacyLink.href);
+      });
+    }
+  })();
+  
+  // 移除原有的模型帮助按钮（完全移除弹窗入口）
+  const modelHelpBtn = document.getElementById('modelHelpBtn');
+  if(modelHelpBtn) modelHelpBtn.remove();
+  
+  // 确保不使用任何模态窗口，清理任何残留的调用
+  window.showSimpleModal = null;
+  
+  // ==================== 进度条修复（保留原有功能无弹窗） ====================
+  (function fixProgressBar() {
+    const progressBar = document.getElementById('progress-bar');
+    if (!progressBar) return;
+    progressBar.style.display = 'none';
+    let progressInterval = null;
+    function showProgress() { if (progressBar.style.display !== 'block') { progressBar.style.display = 'block'; progressBar.value = 0; } if (progressInterval) clearInterval(progressInterval); progressInterval = setInterval(()=>{},800); }
+    function hideProgress() { if (progressInterval) clearInterval(progressInterval); progressBar.style.display = 'none'; progressBar.value = 0; }
+    const startBtn = document.getElementById('start');
+    const stopBtn = document.getElementById('stop');
+    if(startBtn) startBtn.addEventListener('click', showProgress);
+    if(stopBtn) stopBtn.addEventListener('click', hideProgress);
+    const originalSetProgress = window.setProgress;
+    window.setProgress = function(percent) { 
+      if(originalSetProgress) originalSetProgress(percent); 
+      if(progressBar && typeof percent === 'number') { 
+        if(progressBar.style.display !== 'block') showProgress(); 
+        progressBar.value = Math.min(100, Math.max(0, percent)); 
+        if(percent >= 100) setTimeout(hideProgress,800); 
+      } 
+    };
+    window.addEventListener('waifu2x-progress', (e) => { if(e.detail?.progress) window.setProgress(e.detail.progress); });
+    const msgDiv = document.getElementById('message');
+    if(msgDiv) new MutationObserver(() => { if(msgDiv.innerText.toLowerCase().includes('complete')||msgDiv.innerText.includes('完成')) setTimeout(hideProgress,300); }).observe(msgDiv, { childList: true, subtree: true, characterData: true });
+  })();
+
+  // 移除所有下载接管、文件保存接管、权限请求等代码
+  // 确保原有的a标签不会触发自定义保存（不存在的钩子） —— 已完全清理
+  // 额外保证 canvas 导出可通过右键保存，并且原script.js中的下载触发使用默认downloadFile(简单版本)
+  
+  // 由于之前可能有webapp相关的调用残留（服务弹窗），全部移除
+  
+  // 初始化语言
+  document.addEventListener('DOMContentLoaded', () => switchLang('zh'));
+  document.getElementById('lang-zh')?.addEventListener('click', () => switchLang('zh'));
+  document.getElementById('lang-en')?.addEventListener('click', () => switchLang('en'));
+  
+  // 可选：禁用任何 webapp 相关并且可能会触发的原生保存提示
+  if (typeof webapp !== 'undefined') {
+    // 静默屏蔽原生保存方法调用，但不报错
+    if(webapp.保存下载文件) webapp.保存下载文件 = null;
+    if(webapp.保存指定文件) webapp.保存指定文件 = null;
+    if(webapp.显示文本提示) webapp.显示文本提示 = null;
+  }
+  
+  // 处理文件拖拽的简单提示（仅控制台，不弹窗）
+  const fileInput = document.getElementById('file');
+  const srcImg = document.getElementById('src');
+  if(srcImg && fileInput) {
+    srcImg.addEventListener('dragover', (e) => e.preventDefault());
+    srcImg.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const dt = e.dataTransfer;
+      if(dt.files && dt.files.length) {
+        fileInput.files = dt.files;
+        const changeEvent = new Event('change', { bubbles: true });
+        fileInput.dispatchEvent(changeEvent);
+      }
+    });
+  }
+  
+  // 干净移除所有弹窗后，额外保证即使有代码试图创建弹窗也不会显示
+  // 屏蔽可能的 alert 弹窗？不干扰，但要求已满足：自定义模态框已完全清除
+  // 删除所有已定义的相关DOM引用以及样式残留（无影响）
+  
+  // 可选：改造任何可能原本显示“复制成功”的地方 —— 复制功能已无弹窗
+  // 重写之前的全局复制引用（如有）
+  window.copyToClipboard = copyToClipboard;
+  
+  // 确保所有下载操作均使用简单的浏览器下载，无弹窗和权限请求
+  // 如果有原始的waifu2x处理完成后保存图片的逻辑，会调用 downloadFile 我们确保该函数无弹窗
+  // 完善 downloadFile 以确保canvas导出（如有）被正确处理
+  if (typeof window.saveAsBlob === 'undefined') {
+    window.saveAsBlob = function(blob, filename) {
+      window.downloadFile(blob, filename);
+    };
+  }
+  
+  // 额外清理所有与模态窗相关的残留全局函数
+  delete window.showServiceModal;
+  delete window.showModelHelpModal;
+  delete window.showSimpleModal;
+  
+  // 清理sessionStorage里可能残留的modal标志，无影响
+  if (sessionStorage.getItem('waifu2x_service_modal_shown')) {
+    sessionStorage.removeItem('waifu2x_service_modal_shown');
+  }
+  
+  // 确保没有监听“下载完成”产生的弹窗
+  // 完成：整个页面已无自定义模态窗、无下载接管、无Native保存请求。
+</script>
 </body>
 </html>
