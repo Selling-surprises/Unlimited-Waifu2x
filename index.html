@@ -176,6 +176,7 @@
       gap: 0.5rem;
       width: auto;
       box-shadow: inset 0 1px 3px #ffffff, 0 2px 4px #00000008;
+      flex-wrap: wrap;
     }
     #form-box td:last-child {
       flex: 1;
@@ -220,13 +221,13 @@
       border-radius: 30px;
       white-space: nowrap;
     }
-    /* 模型说明按钮样式 */
+    /* 模型说明按钮样式 - 适应标题右侧 */
     .model-help-btn {
       background: #eef2f8;
       border: 1px solid #cbd5e1;
       border-radius: 40px;
-      padding: 0.45rem 1rem;
-      font-size: 0.9rem;
+      padding: 0.35rem 1rem;
+      font-size: 0.85rem;
       font-weight: 500;
       font-family: inherit;
       color: #1e3a5f;
@@ -236,6 +237,7 @@
       align-items: center;
       gap: 0.3rem;
       box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      white-space: nowrap;
     }
     .model-help-btn:hover {
       background: #e2eaf2;
@@ -415,7 +417,7 @@
       .comment { white-space: normal; }
       .model-help-card { max-width: 95%; }
       .model-help-table th, .model-help-table td { padding: 0.5rem; font-size: 0.8rem; }
-      .model-help-btn { padding: 0.35rem 0.8rem; font-size: 0.8rem; }
+      .model-help-btn { padding: 0.3rem 0.8rem; font-size: 0.75rem; }
     }
   </style>
 </head>
@@ -443,14 +445,19 @@
     <form id="form-box">
       <table>
         <tbody>
+          <!-- 文件选择行 -->
           <tr>
-            <td><span data-i18n="file_emoji_label">📂 文件</span><span>(<span data-i18n="drag_text">拖拽</span>)</span></td>
+            <td style="display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <span data-i18n="file_emoji_label">📂 文件</span><span>(<span data-i18n="drag_text">拖拽</span>)</span>
+            </td>
             <td><input type="file" id="file" name="file" accept="image/*"></td>
           </tr>
+          <!-- 模型行 - 说明按钮已移至模型标题右侧 -->
           <tr>
-            <td style="display: inline-flex; align-items: center; gap: 0.5rem;">
+            <td style="display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
               <span data-i18n="model_label">🧠 模型</span>
-             </td>
+              <button type="button" id="modelHelpBtn" class="model-help-btn" data-i18n="model_help_btn">❓ 说明</button>
+            </td>
             <td>
               <select name="model" style="flex: 1 1 auto;">
                 <option value="swin_unet.art" selected data-i18n="model_swin_art">🎨 swin_unet / 插画</option>
@@ -458,10 +465,9 @@
                 <option value="swin_unet.photo" data-i18n="model_swin_photo">📷 swin_unet / 照片</option>
                 <option value="cunet.art" data-i18n="model_cunet_art">🎨 cunet / 插画</option>
               </select>
-              <button type="button" id="modelHelpBtn" class="model-help-btn" data-i18n="model_help_btn">❓ 说明</button>
-              </div>
             </td>
-          </tr>
+           </tr>
+          <!-- 降噪行 -->
           <tr>
             <td data-i18n="noise_label">🌀 降噪</td>
             <td><select name="noise_level">
@@ -472,6 +478,7 @@
                 <option value="3" data-i18n="noise_highest">(3) 最高</option>
             </select></td>
           </tr>
+          <!-- 放大倍率行 -->
           <tr>
             <td data-i18n="scale_label">🔍 放大</td>
             <td><select name="scale">
@@ -482,6 +489,7 @@
               <span id="scale-comment" class="comment" data-i18n="scale_comment">不支持4倍</span>
             </td>
           </tr>
+          <!-- 分块行 -->
           <tr>
             <td data-i18n="tile_label">🧩 分块</td>
             <td><div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
@@ -496,16 +504,19 @@
               <span id="tile-comment" class="comment" data-i18n="tile_comment">推荐256</span>
             </td>
           </tr>
+          <!-- TTA测试增强 -->
           <tr>
             <td data-i18n="tta_label">🔄 测试增强 (TTA)</td>
             <td><select name="tta"><option value="0" selected>0</option><option value="2">2</option><option value="4">4</option></select>
               <span style="color:#4b6584;" data-i18n="tta_integrated">集成</span>
             </td>
           </tr>
+          <!-- 透明通道 -->
           <tr>
             <td data-i18n="alpha_label">🎭 透明通道</td>
             <td><select name="alpha"><option value="1" data-i18n="alpha_auto">自动</option><option value="0" selected data-i18n="alpha_disable">禁用</option></select></td>
           </tr>
+          <!-- 按钮行 -->
           <tr>
             <td colspan="2"><div id="button-box">
                 <input type="button" id="start" value="开始" data-i18n="start_btn">
@@ -527,8 +538,7 @@
 </div>
 
 <script>
-  // ==================== 国际化扩展 (加入模型帮助说明) ====================
-  // 原有 i18n 结构保留并扩展模型说明表相关字段
+  // ==================== 国际化扩展 (模型帮助说明完整保留) ====================
   const i18n = {
     zh: {
       title: "Unlimited Waifu2x", subhead: "⚡ 浏览器端二次元放大 · 完全本地处理",
@@ -542,7 +552,6 @@
       alpha_auto: "自动", alpha_disable: "禁用", start_btn: "开始", stop_btn: "停止",
       message_ready: "( ・∀・) 准备就绪", scale_comment: "不支持4倍", tile_comment: "推荐256",
       footer_based: "基于", footer_link: "nunif/waifu2x/unlimited_waifu2x 代码", footer_privacy: "隐私政策",
-      // 模型帮助按钮及表格专用
       model_help_btn: "❓ 说明",
       model_help_title: "📖 模型适用场景说明",
       model_help_header_model: "模型",
@@ -569,7 +578,6 @@
       alpha_auto: "Auto", alpha_disable: "Disabled", start_btn: "Start", stop_btn: "Stop",
       message_ready: "( ・∀・) Ready", scale_comment: "4x not supported", tile_comment: "256 recommended",
       footer_based: "Based on", footer_link: "nunif/waifu2x/unlimited_waifu2x code", footer_privacy: "Privacy Policy",
-      // 模型帮助英文
       model_help_btn: "❓ Info",
       model_help_title: "📖 Model Usage Guide",
       model_help_header_model: "Model",
@@ -588,7 +596,6 @@
 
   let currentLang = 'zh';
   
-  // 更新所有带 data-i18n 属性的元素（包含新增按钮）
   function switchLang(lang) {
     if (!i18n[lang]) return;
     currentLang = lang;
@@ -604,7 +611,6 @@
     });
   }
 
-  // 复制功能 (无弹窗)
   function copyToClipboard(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).catch(() => {});
@@ -622,7 +628,6 @@
     window.open(url, '_blank', 'noopener noreferrer');
   }
   
-  // 下载辅助（原生无弹窗）
   if (typeof window.downloadFile === 'undefined') {
     window.downloadFile = function(source, suggestedName) {
       try {
@@ -660,7 +665,6 @@
     };
   }
   
-  // 修复底部链接使用普通打开方式
   (function fixFooterLink() {
     const githubLink = document.getElementById('external-github-link');
     if(githubLink) {
@@ -680,17 +684,16 @@
     }
   })();
   
-  // ⭐ 保留模型帮助按钮：不再移除！注释掉原删除逻辑
-  // 以下清理仅针对旧的无用弹窗函数，保留模型帮助能力
   window.showSimpleModal = null;
   if (window.showServiceModal) window.showServiceModal = null;
   
-  // 显示模型说明弹窗（动态生成表格，基于当前语言）
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+  }
+  
   function showModelHelpModal() {
-    // 移除已存在的弹窗避免重叠
     const existingModal = document.querySelector('.model-help-modal');
     if (existingModal) existingModal.remove();
-    
     const lang = currentLang;
     const title = i18n[lang].model_help_title;
     const headerModel = i18n[lang].model_help_header_model;
@@ -706,15 +709,12 @@
       tableHtml += `<tr><td>${escapeHtml(row.name)}</td><td>${escapeHtml(row.desc)}</td></tr>`;
     });
     tableHtml += `</tbody></table>`;
-    
     const overlay = document.createElement('div');
     overlay.className = 'model-help-modal';
     overlay.innerHTML = `
       <div class="model-help-card">
         <div class="modal-header">${escapeHtml(title)}</div>
-        <div class="modal-body">
-          ${tableHtml}
-        </div>
+        <div class="modal-body">${tableHtml}</div>
         <div class="modal-actions">
           <div class="modal-action-bottom">
             <button id="modalHelpCloseBtn">${escapeHtml(i18n[lang].close_btn)}</button>
@@ -724,15 +724,9 @@
     `;
     document.body.appendChild(overlay);
     overlay.querySelector('#modalHelpCloseBtn').onclick = () => overlay.remove();
-    // 点击背景关闭（可选）
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
   }
   
-  function escapeHtml(str) {
-    return String(str).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
-  }
-  
-  // 进度条修复（保留原有功能）
   (function fixProgressBar() {
     const progressBar = document.getElementById('progress-bar');
     if (!progressBar) return;
@@ -758,7 +752,6 @@
     if(msgDiv) new MutationObserver(() => { if(msgDiv.innerText.toLowerCase().includes('complete')||msgDiv.innerText.includes('完成')) setTimeout(hideProgress,300); }).observe(msgDiv, { childList: true, subtree: true, characterData: true });
   })();
   
-  // 文件拖拽支持
   const fileInput = document.getElementById('file');
   const srcImg = document.getElementById('src');
   if(srcImg && fileInput) {
@@ -774,10 +767,9 @@
     });
   }
   
-  // 绑定模型帮助按钮事件 (确保按钮存在且事件不重复)
+  // 模型帮助按钮事件绑定（布局已移至模型标题右侧，事件确保可用）
   const helpBtn = document.getElementById('modelHelpBtn');
   if (helpBtn) {
-    // 移除可能存在的旧监听避免重复
     const newHelpBtn = helpBtn.cloneNode(true);
     helpBtn.parentNode.replaceChild(newHelpBtn, helpBtn);
     newHelpBtn.addEventListener('click', (e) => {
@@ -786,19 +778,16 @@
     });
   }
   
-  // 初始化语言
   document.addEventListener('DOMContentLoaded', () => switchLang('zh'));
   if (document.getElementById('lang-zh')) document.getElementById('lang-zh').addEventListener('click', () => switchLang('zh'));
   if (document.getElementById('lang-en')) document.getElementById('lang-en').addEventListener('click', () => switchLang('en'));
   
-  // 确保全局下载函数统一无弹窗
   if (typeof window.saveAsBlob === 'undefined') {
     window.saveAsBlob = function(blob, filename) {
       window.downloadFile(blob, filename);
     };
   }
   
-  // 彻底清除无用弹窗残留
   delete window.showServiceModal;
   if (sessionStorage.getItem('waifu2x_service_modal_shown')) sessionStorage.removeItem('waifu2x_service_modal_shown');
 </script>
