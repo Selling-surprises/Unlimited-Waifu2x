@@ -250,7 +250,7 @@ const onnx_runner = {
                 continue;
             }
             for (var x = 0; x < data.width; ++x) {
-                for (var c = 0; c < 3;< 3; ++c) {
+                for (var c = 0; c < 3; ++c) {
                     var i = (y * data.width * 4) + (x * 4) + c;
                     data.data[i] = data.data[i] / 1.5;
                 }
@@ -520,7 +520,6 @@ const onnx_runner = {
             if (single_color == null) {
                 if (has_alpha) {
                     if (tta_level > 0) {
-                        tile {
                         tile_x = await this.tta_split(tile_x, BigInt(tta_level));
                     }
                     var output = await model.run({x: tile_x});
@@ -750,7 +749,7 @@ $(function () {
         $("#dest").css({width: "auto", height: "auto"});
         var output_canvas = $("#dest").get(0);
         const alpha_enabled = parseInt($("select[name=alpha]").val()) == 1;
-        const has_alpha = !alpha_enabled ? false: onnx_runner.check_alpha_channel(image_data.data);
+        const has_alpha = !alpha_enabled ? false: onnx_runner.check_alpha_channel(image_data.data.data);
         var alpha_config = null;
         if (has_alpha) {
             var alpha_method;
@@ -886,20 +885,20 @@ $(function () {
         }, second * 1000);
     };
     $("#start").click(async () => {
-        var file = $("#file").get(0);
-        if (file.files.length > 0 && file.files[0].type.match(/image/)) {
-            await process(file.files[0]);
+        var fileInput = $("#file").get(0);
+        if (fileInput.files.length > 0 && fileInput.files[0].type.match(/image/)) {
+            await process(fileInput.files[0]);
         } else {
             set_message("(ﾟ∀ﾟ) No Image Found");
         }
     });
-    $("#file").change(() => {
+    $("#file").change(function() {  // ← 改为普通函数，使用 this
         if (onnx_runner.running) {
             console.log("Already running");
             return;
         }
-        if (file.files.length > 0 && file.files[0].type.match(/image/)) {
-            set_input_image(file.files[0]);
+        if (this.files.length > 0 && this.files[0].type.match(/image/)) {
+            set_input_image(this.files[0]);
             set_message("( ・∀・)b");
         } else {
             clear_input_image();
@@ -960,8 +959,6 @@ $(function () {
         var zoomInBtn = $('<button style="pointer-events:auto; background:white; border:none; border-radius:50%; width:48px; height:48px; font-size:24px; line-height:48px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.3);">+</button>');
         var zoomOutBtn = $('<button style="pointer-events:auto; background:white; border:none; border-radius:50%; width:48px; height:48px; font-size:24px; line-height:48px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.3);">−</button>');
         var resetBtn = $('<button style="pointer-events:auto; background:white; border:none; border-radius:50%; width:48px; height:48px; font-size:20px; line-height:48px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.3);">↺</button>');
-
-button>');
 
         controls.append(zoomOutBtn, resetBtn, zoomInBtn, closeBtn);
         container.append(img);
