@@ -250,7 +250,7 @@ const onnx_runner = {
                 continue;
             }
             for (var x = 0; x < data.width; ++x) {
-                for (var c = 0; c < 3; ++c) {
+                for (var c = 0; c < 3;< 3; ++c) {
                     var i = (y * data.width * 4) + (x * 4) + c;
                     data.data[i] = data.data[i] / 1.5;
                 }
@@ -520,6 +520,7 @@ const onnx_runner = {
             if (single_color == null) {
                 if (has_alpha) {
                     if (tta_level > 0) {
+                        tile {
                         tile_x = await this.tta_split(tile_x, BigInt(tta_level));
                     }
                     var output = await model.run({x: tile_x});
@@ -686,9 +687,18 @@ function uuid()
 /* UI */
 $(function () {
     /* init */
-    ort.env.wasm.proxy = true;
-    ort.env.wasm.numThreads = navigator.hardwareConcurrency;
-    ort.env.wasm.wasmPaths = CONFIG.basePath + "js/";
+    // GitHub Pages 不支持 COOP/COEP 响应头，无法使用多线程 WASM
+    // 必须关闭 proxy 和 numThreads，否则 WASM 初始化失败
+    ort.env.wasm.proxy = false;
+    ort.env.wasm.numThreads = 1;
+    
+    // WASM 运行时文件走 CDN，避免本地文件缺失/版本不匹配问题
+    // 版本号需要与 ort.min.js 的版本匹配
+    ort.env.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.14.0/dist/";
+    
+    // 模型文件仍然从当前仓库加载（路径已用 basePath 修复）
+    // CONFIG.basePath = /Unlimited-Waifu2x/
+    // 模型路径 = /Unlimited-Waifu2x/models/...
 
     function removeAlpha(blob)
     {
@@ -950,6 +960,8 @@ $(function () {
         var zoomInBtn = $('<button style="pointer-events:auto; background:white; border:none; border-radius:50%; width:48px; height:48px; font-size:24px; line-height:48px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.3);">+</button>');
         var zoomOutBtn = $('<button style="pointer-events:auto; background:white; border:none; border-radius:50%; width:48px; height:48px; font-size:24px; line-height:48px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.3);">−</button>');
         var resetBtn = $('<button style="pointer-events:auto; background:white; border:none; border-radius:50%; width:48px; height:48px; font-size:20px; line-height:48px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.3);">↺</button>');
+
+button>');
 
         controls.append(zoomOutBtn, resetBtn, zoomInBtn, closeBtn);
         container.append(img);
