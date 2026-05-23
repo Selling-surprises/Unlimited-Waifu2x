@@ -84,17 +84,29 @@ function gen_arch_config()
 
 const CONFIG = {
     arch: gen_arch_config(),
+    basePath: (function() {
+        // 获取当前页面所在目录作为基础路径
+        // 处理 GitHub Pages 子目录部署情况
+        var path = window.location.pathname;
+        // 去掉可能的文件名部分
+        if (path.endsWith('.html')) {
+            path = path.substring(0, path.lastIndexOf('/') + 1);
+        } else if (!path.endsWith('/')) {
+            path += '/';
+        }
+        return path;
+    })(),
     get_config: function(arch, style, method) {
         if ((arch in this.arch) && (style in this.arch[arch]) && (method in this.arch[arch][style])) {
             config = this.arch[arch][style][method];
-            config["path"] = `models/${arch}/${style}/${method}.onnx`;
+            config["path"] = this.basePath + `models/${arch}/${style}/${method}.onnx`;
             return config;
         } else {
             return null;
         }
     },
     get_helper_model_path: function(name) {
-        return `models/utils/${name}.onnx`;
+        return this.basePath + `models/utils/${name}.onnx`;
     }
 };
 
@@ -676,6 +688,7 @@ $(function () {
     /* init */
     ort.env.wasm.proxy = true;
     ort.env.wasm.numThreads = navigator.hardwareConcurrency;
+    ort.env.wasm.wasmPaths = CONFIG.basePath + "js/";
 
     function removeAlpha(blob)
     {
