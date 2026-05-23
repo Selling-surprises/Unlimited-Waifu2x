@@ -84,29 +84,17 @@ function gen_arch_config()
 
 const CONFIG = {
     arch: gen_arch_config(),
-    basePath: (function() {
-        // 获取当前页面所在目录作为基础路径
-        // 处理 GitHub Pages 子目录部署情况
-        var path = window.location.pathname;
-        // 去掉可能的文件名部分
-        if (path.endsWith('.html')) {
-            path = path.substring(0, path.lastIndexOf('/') + 1);
-        } else if (!path.endsWith('/')) {
-            path += '/';
-        }
-        return path;
-    })(),
     get_config: function(arch, style, method) {
         if ((arch in this.arch) && (style in this.arch[arch]) && (method in this.arch[arch][style])) {
             config = this.arch[arch][style][method];
-            config["path"] = this.basePath + `models/${arch}/${style}/${method}.onnx`;
+            config["path"] = `models/${arch}/${style}/${method}.onnx`;
             return config;
         } else {
             return null;
         }
     },
     get_helper_model_path: function(name) {
-        return this.basePath + `models/utils/${name}.onnx`;
+        return `models/utils/${name}.onnx`;
     }
 };
 
@@ -686,18 +674,8 @@ function uuid()
 /* UI */
 $(function () {
     /* init */
-    // GitHub Pages 不支持 COOP/COEP 响应头，无法使用多线程 WASM
-    // 必须关闭 proxy 和 numThreads，否则 WASM 初始化失败
-    ort.env.wasm.proxy = false;
-    ort.env.wasm.numThreads = 1;
-    
-    // WASM 运行时文件走 CDN，避免本地文件缺失/版本不匹配问题
-    // 版本号需要与 ort.min.js 的版本匹配
-    ort.env.wasm.wasmPaths = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.14.0/dist/";
-    
-    // 模型文件仍然从当前仓库加载（路径已用 basePath 修复）
-    // CONFIG.basePath = /Unlimited-Waifu2x/
-    // 模型路径 = /Unlimited-Waifu2x/models/...
+    ort.env.wasm.proxy = true;
+    ort.env.wasm.numThreads = navigator.hardwareConcurrency;
 
     function removeAlpha(blob)
     {
@@ -749,7 +727,7 @@ $(function () {
         $("#dest").css({width: "auto", height: "auto"});
         var output_canvas = $("#dest").get(0);
         const alpha_enabled = parseInt($("select[name=alpha]").val()) == 1;
-        const has_alpha = !alpha_enabled ? false: onnx_runner.check_alpha_channel(image_data.data.data);
+        const has_alpha = !alpha_enabled ? false: onnx_runner.check_alpha_channel(image_data.data);
         var alpha_config = null;
         if (has_alpha) {
             var alpha_method;
@@ -885,20 +863,20 @@ $(function () {
         }, second * 1000);
     };
     $("#start").click(async () => {
-        var fileInput = $("#file").get(0);
-        if (fileInput.files.length > 0 && fileInput.files[0].type.match(/image/)) {
-            await process(fileInput.files[0]);
+        var file = $("#file").get(0);
+        if (file.files.length > 0 && file.files[0].type.match(/image/)) {
+            await process(file.files[0]);
         } else {
             set_message("(ﾟ∀ﾟ) No Image Found");
         }
     });
-    $("#file").change(function() {  // ← 改为普通函数，使用 this
+    $("#file").change(() => {
         if (onnx_runner.running) {
             console.log("Already running");
             return;
         }
-        if (this.files.length > 0 && this.files[0].type.match(/image/)) {
-            set_input_image(this.files[0]);
+        if (file.files.length > 0 && file.files[0].type.match(/image/)) {
+            set_input_image(file.files[0]);
             set_message("( ・∀・)b");
         } else {
             clear_input_image();
