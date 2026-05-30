@@ -1,27 +1,31 @@
 // service-worker.js - Unlimited Waifu2x UWP 离线缓存策略
 const CACHE_NAME = 'waifu2x-uwp-cache-v1';
 const PRECACHE_URLS = [
-  ‘./’,
-  ‘./index.html’,
-  ‘./css/Inter.css’,
-  ‘./js/jquery.min.js’,
-  ‘./js/jquery.cookie.js’,
-  ‘./js/ort.min.js’,
-  ‘./js/script.js’,
-  ‘./blank.png’,
-  ‘./favicon.ico’,
-  ‘./img/favicon-128.png’,
-  ‘./img/favicon-192.png’,
-  ‘./img/favicon-512.png’,
-  ‘./manifest.json’
+  './',
+  './index.html',
+  './css/Inter.css',
+  './js/jquery.min.js',
+  './js/jquery.cookie.js',
+  './js/ort.min.js',
+  './js/script.js',
+  './blank.png',
+  './favicon.ico',
+  './img/favicon-128.png',
+  './img/favicon-192.png',
+  './img/favicon-512.png',
+  './manifest.json',
+  './gtag.js',                               // 新增
+  './ort-wasm-simd-threaded.wasm',           // 新增
+  './ort-wasm-simd.wasm',                    // 新增
+  './ort-wasm.wasm'                          // 新增
 ];
 
 // 安装阶段：预缓存核心静态资源
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      。then(cache => cache.addAll(PRECACHE_URLS))
-      。then(() => self.skipWaiting())
+      .then(cache => cache.addAll(PRECACHE_URLS))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -31,7 +35,7 @@ self.addEventListener('activate', event => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.filter(name => name !== CACHE_NAME)
-          。map(name => caches.delete(name))
+          .map(name => caches.delete(name))
       );
     }).then(() => self.clients.claim())
   );
@@ -68,7 +72,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // 对于静态资源（css, js, 图片等）：缓存优先，提升离线性能
+  // 对于静态资源（css, js, wasm, 图片等）：缓存优先，提升离线性能
   event.respondWith(
     caches.match(event.request)
       .then(cachedResponse => {
