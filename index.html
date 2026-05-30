@@ -5,18 +5,13 @@
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=yes">
   
-  <!-- === UWP 磁贴图标支持（新增） === -->
-  <meta name="application-name" content="Unlimited Waifu2x">
+  <!-- ========== PWA & UWP 支持（新增） ========== -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1b4c6e">
   <meta name="msapplication-TileColor" content="#1b4c6e">
   <meta name="msapplication-TileImage" content="img/favicon-192.png">
-  <meta name="msapplication-square70x70logo" content="img/favicon-128.png">
-  <meta name="msapplication-square150x150logo" content="img/favicon-192.png">
-  <meta name="msapplication-square310x310logo" content="img/favicon-512.png">
-  <meta name="msapplication-wide310x150logo" content="img/favicon-512.png">
-  
-  <!-- === PWA manifest 支持（新增，触发安装提示） === -->
-  <link rel="manifest" href="manifest.json">
-  <!-- ============================ -->
+  <meta name="application-name" content="Unlimited Waifu2x">
+  <!-- ========================================= -->
 
   <link rel="icon" href="favicon.ico">
   <title>Unlimited Waifu2x</title>
@@ -26,7 +21,6 @@
   <script src="js/ort.min.js"></script>
   <script src="js/script.js" charset="utf-8"></script>
   <style>
-    /* 原有样式完全不变（省略，与之前完全一致） */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -95,7 +89,6 @@
       border-color: #1b4c6e;
     }
 
-    /* 主面板基础：移动端默认上下排列 */
     #main-panel {
       display: flex;
       flex-direction: column;
@@ -103,24 +96,18 @@
       background: transparent;
       margin: 1rem 0 1.5rem;
     }
-
-    /* 左侧预览区容器（移动端占满） */
     .previews-col {
       display: flex;
       flex-direction: column;
       gap: 1.8rem;
       width: 100%;
     }
-
-    /* 右侧设置区容器（移动端占满） */
     .settings-area {
       width: 100%;
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
     }
-
-    /* 原图和输出卡片样式 */
     #src-box, #dest-box {
       background: white;
       border-radius: 28px;
@@ -142,8 +129,6 @@
       margin-bottom: 0.75rem;
       display: block;
     }
-
-    /* 预览图统一样式：限制最大高度，宽度自适应 */
     #src, #dest {
       border-radius: 18px;
       background: #f0f4fa;
@@ -168,8 +153,6 @@
       background: #f0f4fa;
       cursor: pointer;
     }
-
-    /* 表单基础样式 */
     #form-box {
       background: #ffffffdd;
       backdrop-filter: blur(16px);
@@ -183,7 +166,6 @@
       width: 100%;
       border-collapse: collapse;
     }
-    /* 移动端默认保持原有的flex行布局 */
     #form-box tbody {
       display: block;
     }
@@ -364,8 +346,6 @@
       font-weight: 500;
       border-bottom: 1px dotted #9bb7d4;
     }
-
-    /* 模型帮助模态框样式 */
     .model-help-modal {
       position: fixed;
       top: 0;
@@ -447,64 +427,53 @@
     .modal-action-bottom button:hover {
       background: #e2eaf2;
     }
-
-    /* ========= 电脑端布局：左侧预览区（自然宽度），右侧设置区加宽、宽松两列，高度视觉平衡 ========= */
     @media (min-width: 900px) {
       #main-panel {
         flex-direction: row;
-        align-items: stretch;   /* 左右容器等高，保证视觉连贯 */
+        align-items: stretch;
         gap: 2rem;
       }
-      /* 左侧预览区正常比例，不刻意压缩 */
       .previews-col {
         flex: 1.1;
         max-width: 52%;
         min-width: 320px;
       }
-      /* 右侧区域加宽，舒适间距 */
       .settings-area {
         width: 680px;
         flex-shrink: 0;
         gap: 1.8rem;
       }
-      /* 预览图最高高度和最小高度，小图时依然保留基础高度，避免右侧过高落差 */
       #src, #dest {
         max-height: 420px;
         min-height: 200px;
       }
-      /* 卡片本身增加最小高度，使图片较小时左右高度差距不大 */
       #src-box, #dest-box {
         min-height: 280px;
       }
       .box-label {
         font-size: 1rem;
       }
-
-      /* 右侧表单：两列网格布局，宽松间距，内边距增加，分割细线 */
       #form-box {
         padding: 2rem 2rem 2rem 2rem;
       }
       #form-box tbody {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 1.5rem 2rem;     /* 行列间距加大，不再紧凑 */
+        gap: 1.5rem 2rem;
       }
-      /* 覆盖原来的块级tr样式 */
       #form-box tr {
-        display: block;           /* 让tr作为网格项表现 */
+        display: block;
         margin: 0;
         padding: 0;
         border-bottom: none;
         background: transparent;
-        border-right: 1px solid #dce5ef;   /* 中间分割细线 */
+        border-right: 1px solid #dce5ef;
         padding-right: 1.2rem;
       }
-      /* 每一行中的第二个网格项（偶数项）去掉右边框 */
       #form-box tr:nth-child(even) {
         border-right: none;
         padding-right: 0;
       }
-      /* 跨列的行（文件行和按钮行）重置边框和跨列布局，并增加上下留白 */
       #form-box tr.full-width-row {
         grid-column: 1 / -1;
         border-right: none;
@@ -517,7 +486,6 @@
         margin-bottom: 0.5rem;
         background: transparent;
       }
-      /* 跨列行内部的td保持原有行为 */
       #form-box tr.full-width-row td {
         display: flex;
         flex-wrap: wrap;
@@ -525,7 +493,6 @@
         gap: 0.8rem;
         width: auto;
       }
-      /* 普通行内部td样式调整，标签与控件在网格内竖直排列更舒适 */
       #form-box tr:not(.full-width-row) td {
         display: block;
         width: 100%;
@@ -546,14 +513,12 @@
         flex-wrap: wrap;
         gap: 0.8rem;
       }
-      /* 让select和文件选择框更宽，内部舒适 */
       #form-box select, #form-box input[type="file"] {
         width: 100%;
         max-width: 100%;
         padding: 0.7rem 1.2rem;
         font-size: 1rem;
       }
-      /* 复选框等保持适当间距 */
       #form-box label {
         font-size: 0.95rem;
       }
@@ -562,7 +527,6 @@
         margin-top: 0.3rem;
         font-size: 0.85rem;
       }
-      /* 按钮行内部按钮更大方 */
       .full-width-row #button-box {
         justify-content: center;
         gap: 1.5rem;
@@ -580,8 +544,6 @@
         font-size: 1.2rem;
       }
     }
-
-    /* 移动端保持原有垂直舒适布局，无任何两列影响 */
     @media (max-width: 899px) {
       .settings-area {
         width: 100%;
@@ -601,7 +563,6 @@
         flex-wrap: wrap;
       }
     }
-
     @media (max-width: 480px) {
       #form-box {
         padding: 1.2rem;
@@ -625,7 +586,6 @@
   </div>
 
   <div id="main-panel">
-    <!-- 左侧预览区域：上下两个预览框 -->
     <div class="previews-col">
       <div id="src-box">
         <div class="box-label" data-i18n="src_label">🖼️ 原图</div>
@@ -637,19 +597,16 @@
       </div>
     </div>
 
-    <!-- 右侧设置区域：宽松两列布局 + 进度条 + 消息 -->
     <div class="settings-area">
       <form id="form-box">
         <table>
           <tbody>
-            <!-- 文件选择行，跨两列 -->
             <tr class="full-width-row">
               <td style="display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                 <span data-i18n="file_emoji_label">📂 文件</span><span>(<span data-i18n="drag_text">拖拽</span>)</span>
               </td>
               <td><input type="file" id="file" name="file" accept="image/*"></td>
             </tr>
-            <!-- 模型行 -->
             <tr>
               <td style="display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                 <span data-i18n="model_label">🧠 模型</span>
@@ -664,7 +621,6 @@
                 </select>
               </td>
             </tr>
-            <!-- 降噪行 -->
             <tr>
               <td data-i18n="noise_label">🌀 降噪</td>
               <td><select name="noise_level">
@@ -675,7 +631,6 @@
                   <option value="3" data-i18n="noise_highest">(3) 最高</option>
               </select></td>
             </tr>
-            <!-- 放大倍率行 -->
             <tr>
               <td data-i18n="scale_label">🔍 放大</td>
               <td>
@@ -687,7 +642,6 @@
                 <span id="scale-comment" class="comment" data-i18n="scale_comment">不支持4倍</span>
               </td>
             </tr>
-            <!-- 分块行：将“随机顺序”复选框移到标题右边（第一个td内） -->
             <tr>
               <td style="display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                 <span data-i18n="tile_label">🧩 分块</span>
@@ -707,7 +661,6 @@
                 <span id="tile-comment" class="comment" data-i18n="tile_comment">推荐256</span>
               </td>
             </tr>
-            <!-- TTA测试增强行 -->
             <tr>
               <td data-i18n="tta_label">🔄 测试增强 (TTA)</td>
               <td>
@@ -715,12 +668,10 @@
                 <span style="color:#4b6584;" data-i18n="tta_integrated">集成</span>
               </td>
             </tr>
-            <!-- 透明通道行 -->
             <tr>
               <td data-i18n="alpha_label">🎭 透明通道</td>
               <td><select name="alpha"><option value="1" data-i18n="alpha_auto">自动</option><option value="0" selected data-i18n="alpha_disable">禁用</option></select></td>
             </tr>
-            <!-- 按钮行，跨两列 -->
             <tr class="full-width-row">
               <td colspan="2"><div id="button-box">
                   <input type="button" id="start" value="开始" data-i18n="start_btn">
@@ -738,7 +689,7 @@
 
   <div id="footer">
     <div><span data-i18n="footer_based">基于</span><a href="https://github.com/nagadomi/nunif" id="external-github-link" target="_blank" rel="noopener" data-i18n="footer_link">nunif/waifu2x/unlimited_waifu2x 代码</a></div>
-    <div><a href="privacy_policy.txt" data-i18n="footer_privacy">隐私政策</a></div>
+    <div><a href="privacy_policy.md" data-i18n="footer_privacy">隐私政策</a></div>
   </div>
 </div>
 
@@ -850,7 +801,7 @@
       githubLink.parentNode.replaceChild(newLink, githubLink);
       newLink.addEventListener('click', (e) => { e.preventDefault(); openExternalUrl(newLink.href); });
     }
-    const privacyLink = document.querySelector('#footer a[href="privacy_policy.txt"]');
+    const privacyLink = document.querySelector('#footer a[href="privacy_policy.md"]');
     if(privacyLink) privacyLink.addEventListener('click', (e) => { e.preventDefault(); openExternalUrl(privacyLink.href); });
   })();
 
@@ -866,7 +817,7 @@
       { name: i18n[lang].model_help_cunet_art, desc: i18n[lang].model_help_cunet_art_desc }
     ];
     let tableHtml = `<table class="model-help-table"><thead><tr><th>${escapeHtml(i18n[lang].model_help_header_model)}</th><th>${escapeHtml(i18n[lang].model_help_header_scene)}</th></tr></thead><tbody>`;
-    rows.forEach(row => { tableHtml += `<tr><td>${escapeHtml(row.name)}</td><td>${escapeHtml(row.desc)}</td></tr>`; });
+    rows.forEach(row => { tableHtml += `<tr><td>${escapeHtml(row.name)}</td><td>${escapeHtml(row.desc)}</td>`; });
     tableHtml += `</tbody></table>`;
     const overlay = document.createElement('div');
     overlay.className = 'model-help-modal';
@@ -929,6 +880,19 @@
   if (typeof window.saveAsBlob === 'undefined') window.saveAsBlob = function(blob, filename) { window.downloadFile(blob, filename); };
   delete window.showServiceModal;
   if (sessionStorage.getItem('waifu2x_service_modal_shown')) sessionStorage.removeItem('waifu2x_service_modal_shown');
+</script>
+
+<!-- ========== Service Worker 注册（PWA 安装提示核心） ========== -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('./service-worker.js').then(function(registration) {
+        console.log('Service Worker 注册成功，作用域: ', registration.scope);
+      }).catch(function(error) {
+        console.error('Service Worker 注册失败: ', error);
+      });
+    });
+  }
 </script>
 </body>
 </html>
