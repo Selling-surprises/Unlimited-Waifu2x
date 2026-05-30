@@ -1,16 +1,16 @@
 {
   “name”： “Unlimited Waifu2x”，
   “short_name”： “Waifu2x”，
-  “description”： “浏览器端二次元图像放大与降噪工具，完全本地处理，支持UWP”，
-  “start_url”： “.”，
-  “scope”： “.”，
+  “description”： “浏览器端二次元图像放大与降噪工具，完全本地处理”，
+  “start_url”： “./index.html”，      // 改为相对路径
+  “scope”： “./”，                    // 改为相对路径
   “display”： “standalone”，
   “theme_color”： “#1b4c6e”，
   “background_color”： “#f4f7fb”，
   “orientation”： “any”，
   “icons”： [
     {
-      “src”： “img/favicon-128.png”，
+      “src”： “img/favicon-128.png”，   // 去掉前导 /
       “sizes”： “128x128”，
       “type”： “image/png”，
       “purpose”： “any maskable”
@@ -33,11 +33,10 @@
       “name”： “开始处理”，
       “short_name”： “处理”，
       “description”： “打开图像放大界面”，
-      “url”： “index.html”，
+      “url”： “index.html”，          // 不带斜杠
       “icons”： [{ “src”： “img/favicon-192.png”， “sizes”： “192x192” }]
     }
   ],
   “categories”： [“photography”， “utilities”， “graphics”],
-  “lang”： “zh-CN”,
-  “iarc_rating_id”： “0”
+  “lang”： “zh-CN”
 }
