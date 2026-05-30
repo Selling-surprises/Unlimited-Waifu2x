@@ -29,7 +29,7 @@
       align-items: center;
     }
     .app-container {
-      max-width: 1400px;
+      max-width: 1600px;
       width: 100%;
     }
     h1 {
@@ -47,7 +47,7 @@
       text-align: center;
       font-size: 0.95rem;
       color: #475569;
-      margin-bottom: 1rem;
+      margin-bottom: 1.8rem;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -79,13 +79,33 @@
       color: white;
       border-color: #1b4c6e;
     }
+
+    /* 主面板基础：移动端默认上下排列 */
     #main-panel {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 1.8rem;
       background: transparent;
-      margin: 2rem 0 1.5rem;
+      margin: 1rem 0 1.5rem;
     }
+
+    /* 左侧预览区容器（移动端占满） */
+    .previews-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+      width: 100%;
+    }
+
+    /* 右侧设置区容器（移动端占满） */
+    .settings-area {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* 原图和输出卡片样式 */
     #src-box, #dest-box {
       background: white;
       border-radius: 28px;
@@ -96,6 +116,7 @@
       flex-direction: column;
       border: 1px solid #ffffff50;
       backdrop-filter: blur(2px);
+      width: 100%;
     }
     .box-label {
       font-size: 0.9rem;
@@ -106,45 +127,48 @@
       margin-bottom: 0.75rem;
       display: block;
     }
+
+    /* 预览图统一样式：限制最大高度，宽度自适应 */
     #src, #dest {
-      width: 100%;
-      height: auto;
       border-radius: 18px;
       background: #f0f4fa;
       box-shadow: inset 0 2px 6px #00000010, 0 4px 12px #0000000c;
       transition: all 0.2s;
       display: block;
       object-fit: contain;
-      min-height: 200px;
+      min-height: 160px;
+      max-width: 100%;
+      max-height: 420px;
+      width: auto;
+      height: auto;
       background-image: linear-gradient(45deg, #d9e2ec 25%, transparent 25%),
                         linear-gradient(-45deg, #d9e2ec 25%, transparent 25%);
       background-size: 20px 20px;
       background-position: 0 0, 0 10px;
     }
-    #dest {
-      max-width: 100%;
-      max-height: 400px;
-      width: auto;
-      height: auto;
-      object-fit: contain;
+    #src {
+      cursor: pointer;
     }
+    #dest {
+      background: #f0f4fa;
+      cursor: pointer;
+    }
+
+    /* 表单基础样式 */
     #form-box {
-      grid-column: 1 / -1;
       background: #ffffffdd;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid #ffffff;
       border-radius: 32px;
       box-shadow: 0 20px 40px -18px #1e293b40, 0 8px 20px -8px #00000010;
-      padding: 2rem 2rem 1.8rem;
-      margin-top: 0.5rem;
-      overflow-x: auto;
+      width: 100%;
     }
     #form-box table {
       width: 100%;
-      display: block;
       border-collapse: collapse;
     }
+    /* 移动端默认保持原有的flex行布局 */
     #form-box tbody {
       display: block;
     }
@@ -205,7 +229,7 @@
       word-break: keep-all;
     }
     select {
-      background-image: url('data:image/svg+xml;utf8,http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2334495e" stroke-width="2">');
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2334495e" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>');
       background-repeat: no-repeat;
       background-position: right 1rem center;
       background-size: 1.2rem;
@@ -221,7 +245,6 @@
       border-radius: 30px;
       white-space: nowrap;
     }
-    /* 模型说明按钮样式 - 适应标题右侧 */
     .model-help-btn {
       background: #eef2f8;
       border: 1px solid #cbd5e1;
@@ -249,6 +272,7 @@
       gap: 1rem;
       justify-content: center;
       flex-wrap: wrap;
+      width: 100%;
     }
     #start, #stop {
       border: none;
@@ -270,11 +294,9 @@
       box-shadow: 0 4px 12px #0000001a;
     }
     #progress-bar {
-      grid-column: 1 / -1;
       width: 100%;
       height: 12px;
       border-radius: 30px;
-      margin: 1rem 0 0.5rem;
       background-color: #e2e8f0;
       border: none;
       overflow: hidden;
@@ -294,7 +316,6 @@
       border-radius: 30px;
     }
     #message {
-      grid-column: 1 / -1;
       background: #eef4fa;
       border-radius: 60px;
       padding: 1rem 2rem;
@@ -304,7 +325,6 @@
       color: #1a3d62;
       border: 1px solid #ffffff;
       box-shadow: 0 2px 10px #0000000c;
-      margin: 0.5rem 0 0;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -329,6 +349,7 @@
       font-weight: 500;
       border-bottom: 1px dotted #9bb7d4;
     }
+
     /* 模型帮助模态框样式 */
     .model-help-modal {
       position: fixed;
@@ -411,13 +432,169 @@
     .modal-action-bottom button:hover {
       background: #e2eaf2;
     }
-    @media (max-width: 640px) {
-      #form-box td:first-child { min-width: 120px; }
-      #form-box td:last-child { min-width: 160px; }
-      .comment { white-space: normal; }
-      .model-help-card { max-width: 95%; }
-      .model-help-table th, .model-help-table td { padding: 0.5rem; font-size: 0.8rem; }
-      .model-help-btn { padding: 0.3rem 0.8rem; font-size: 0.75rem; }
+
+    /* ========= 电脑端布局：左侧预览区（自然宽度），右侧设置区加宽、宽松两列，高度视觉平衡 ========= */
+    @media (min-width: 900px) {
+      #main-panel {
+        flex-direction: row;
+        align-items: stretch;   /* 左右容器等高，保证视觉连贯 */
+        gap: 2rem;
+      }
+      /* 左侧预览区正常比例，不刻意压缩 */
+      .previews-col {
+        flex: 1.1;
+        max-width: 52%;
+        min-width: 320px;
+      }
+      /* 右侧区域加宽，舒适间距 */
+      .settings-area {
+        width: 680px;
+        flex-shrink: 0;
+        gap: 1.8rem;
+      }
+      /* 预览图最高高度和最小高度，小图时依然保留基础高度，避免右侧过高落差 */
+      #src, #dest {
+        max-height: 420px;
+        min-height: 200px;
+      }
+      /* 卡片本身增加最小高度，使图片较小时左右高度差距不大 */
+      #src-box, #dest-box {
+        min-height: 280px;
+      }
+      .box-label {
+        font-size: 1rem;
+      }
+
+      /* 右侧表单：两列网格布局，宽松间距，内边距增加，分割细线 */
+      #form-box {
+        padding: 2rem 2rem 2rem 2rem;
+      }
+      #form-box tbody {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem 2rem;     /* 行列间距加大，不再紧凑 */
+      }
+      /* 覆盖原来的块级tr样式 */
+      #form-box tr {
+        display: block;           /* 让tr作为网格项表现 */
+        margin: 0;
+        padding: 0;
+        border-bottom: none;
+        background: transparent;
+        border-right: 1px solid #dce5ef;   /* 中间分割细线 */
+        padding-right: 1.2rem;
+      }
+      /* 每一行中的第二个网格项（偶数项）去掉右边框 */
+      #form-box tr:nth-child(even) {
+        border-right: none;
+        padding-right: 0;
+      }
+      /* 跨列的行（文件行和按钮行）重置边框和跨列布局，并增加上下留白 */
+      #form-box tr.full-width-row {
+        grid-column: 1 / -1;
+        border-right: none;
+        padding-right: 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.8rem 1.5rem;
+        margin-top: 0.75rem;
+        margin-bottom: 0.5rem;
+        background: transparent;
+      }
+      /* 跨列行内部的td保持原有行为 */
+      #form-box tr.full-width-row td {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.8rem;
+        width: auto;
+      }
+      /* 普通行内部td样式调整，标签与控件在网格内竖直排列更舒适 */
+      #form-box tr:not(.full-width-row) td {
+        display: block;
+        width: 100%;
+        padding: 0;
+      }
+      #form-box tr:not(.full-width-row) td:first-child {
+        min-width: auto;
+        width: fit-content;
+        margin-bottom: 0.6rem;
+        background: #ecf3f9;
+        display: inline-flex;
+        font-size: 0.95rem;
+        padding: 0.4rem 1.2rem;
+      }
+      #form-box tr:not(.full-width-row) td:last-child {
+        width: 100%;
+        min-width: auto;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+      }
+      /* 让select和文件选择框更宽，内部舒适 */
+      #form-box select, #form-box input[type="file"] {
+        width: 100%;
+        max-width: 100%;
+        padding: 0.7rem 1.2rem;
+        font-size: 1rem;
+      }
+      /* 复选框等保持适当间距 */
+      #form-box label {
+        font-size: 0.95rem;
+      }
+      .comment {
+        white-space: normal;
+        margin-top: 0.3rem;
+        font-size: 0.85rem;
+      }
+      /* 按钮行内部按钮更大方 */
+      .full-width-row #button-box {
+        justify-content: center;
+        gap: 1.5rem;
+        margin: 0.5rem 0;
+      }
+      #start, #stop {
+        padding: 0.8rem 2.2rem;
+        font-size: 1.2rem;
+      }
+      #progress-bar {
+        margin-top: 0.25rem;
+      }
+      #message {
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+      }
+    }
+
+    /* 移动端保持原有垂直舒适布局，无任何两列影响 */
+    @media (max-width: 899px) {
+      .settings-area {
+        width: 100%;
+      }
+      #src, #dest {
+        max-height: 300px;
+        min-height: 140px;
+      }
+      #form-box td:first-child {
+        min-width: 120px;
+      }
+      .comment {
+        white-space: normal;
+      }
+      #form-box tr.full-width-row {
+        display: flex;
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #form-box {
+        padding: 1.2rem;
+      }
+      .model-help-btn {
+        padding: 0.25rem 0.7rem;
+        font-size: 0.7rem;
+      }
     }
   </style>
 </head>
@@ -433,102 +610,115 @@
   </div>
 
   <div id="main-panel">
-    <div id="src-box">
-      <div class="box-label" data-i18n="src_label">🖼️ 原图</div>
-      <img id="src" src="blank.png" alt="源图像">
-    </div>
-    <div id="dest-box">
-      <div class="box-label" data-i18n="dest_label">✨ 输出</div>
-      <canvas id="dest"></canvas>
+    <!-- 左侧预览区域：上下两个预览框 -->
+    <div class="previews-col">
+      <div id="src-box">
+        <div class="box-label" data-i18n="src_label">🖼️ 原图</div>
+        <img id="src" src="blank.png" alt="源图像">
+      </div>
+      <div id="dest-box">
+        <div class="box-label" data-i18n="dest_label">✨ 输出</div>
+        <canvas id="dest"></canvas>
+      </div>
     </div>
 
-    <form id="form-box">
-      <table>
-        <tbody>
-          <!-- 文件选择行 -->
-          <tr>
-            <td style="display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-              <span data-i18n="file_emoji_label">📂 文件</span><span>(<span data-i18n="drag_text">拖拽</span>)</span>
-            </td>
-            <td><input type="file" id="file" name="file" accept="image/*"></td>
-          </tr>
-          <!-- 模型行 - 说明按钮已移至模型标题右侧 -->
-          <tr>
-            <td style="display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-              <span data-i18n="model_label">🧠 模型</span>
-              <button type="button" id="modelHelpBtn" class="model-help-btn" data-i18n="model_help_btn">❓ 说明</button>
-            </td>
-            <td>
-              <select name="model" style="flex: 1 1 auto;">
-                <option value="swin_unet.art" selected data-i18n="model_swin_art">🎨 swin_unet / 插画</option>
-                <option value="swin_unet.art_scan" data-i18n="model_swin_art_scan">🖨 swin_unet / 扫描插画</option>
-                <option value="swin_unet.photo" data-i18n="model_swin_photo">📷 swin_unet / 照片</option>
-                <option value="cunet.art" data-i18n="model_cunet_art">🎨 cunet / 插画</option>
-              </select>
-            </td>
-           </tr>
-          <!-- 降噪行 -->
-          <tr>
-            <td data-i18n="noise_label">🌀 降噪</td>
-            <td><select name="noise_level">
-                <option value="-1" data-i18n="noise_none">(-) 无</option>
-                <option value="0" selected data-i18n="noise_low">(0) 低</option>
-                <option value="1" data-i18n="noise_med">(1) 中</option>
-                <option value="2" data-i18n="noise_high">(2) 高</option>
-                <option value="3" data-i18n="noise_highest">(3) 最高</option>
-            </select></td>
-          </tr>
-          <!-- 放大倍率行 -->
-          <tr>
-            <td data-i18n="scale_label">🔍 放大</td>
-            <td><select name="scale">
-                <option value="1" data-i18n="scale_1">1倍</option>
-                <option value="2" selected data-i18n="scale_2">2倍</option>
-                <option value="4" data-i18n="scale_4">4倍</option>
-              </select>
-              <span id="scale-comment" class="comment" data-i18n="scale_comment">不支持4倍</span>
-            </td>
-          </tr>
-          <!-- 分块行 -->
-          <tr>
-            <td data-i18n="tile_label">🧩 分块</td>
-            <td><div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
-                <select name="tile_size">
-                  <option value="64">64</option>
-                  <option value="256" selected>256</option>
-                  <option value="400">400</option>
-                  <option value="640">640</option>
+    <!-- 右侧设置区域：宽松两列布局 + 进度条 + 消息 -->
+    <div class="settings-area">
+      <form id="form-box">
+        <table>
+          <tbody>
+            <!-- 文件选择行，跨两列 -->
+            <tr class="full-width-row">
+              <td style="display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <span data-i18n="file_emoji_label">📂 文件</span><span>(<span data-i18n="drag_text">拖拽</span>)</span>
+              </td>
+              <td><input type="file" id="file" name="file" accept="image/*"></td>
+            </tr>
+            <!-- 模型行 -->
+            <tr>
+              <td style="display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <span data-i18n="model_label">🧠 模型</span>
+                <button type="button" id="modelHelpBtn" class="model-help-btn" data-i18n="model_help_btn">❓ 说明</button>
+              </td>
+              <td>
+                <select name="model" style="flex: 1 1 auto;">
+                  <option value="swin_unet.art" selected data-i18n="model_swin_art">🎨 swin_unet / 插画</option>
+                  <option value="swin_unet.art_scan" data-i18n="model_swin_art_scan">🖨 swin_unet / 扫描插画</option>
+                  <option value="swin_unet.photo" data-i18n="model_swin_photo">📷 swin_unet / 照片</option>
+                  <option value="cunet.art" data-i18n="model_cunet_art">🎨 cunet / 插画</option>
                 </select>
-                <label><input type="checkbox" name="tile_random"> <span data-i18n="tile_random">随机顺序</span></label>
-              </div>
-              <span id="tile-comment" class="comment" data-i18n="tile_comment">推荐256</span>
-            </td>
-          </tr>
-          <!-- TTA测试增强 -->
-          <tr>
-            <td data-i18n="tta_label">🔄 测试增强 (TTA)</td>
-            <td><select name="tta"><option value="0" selected>0</option><option value="2">2</option><option value="4">4</option></select>
-              <span style="color:#4b6584;" data-i18n="tta_integrated">集成</span>
-            </td>
-          </tr>
-          <!-- 透明通道 -->
-          <tr>
-            <td data-i18n="alpha_label">🎭 透明通道</td>
-            <td><select name="alpha"><option value="1" data-i18n="alpha_auto">自动</option><option value="0" selected data-i18n="alpha_disable">禁用</option></select></td>
-          </tr>
-          <!-- 按钮行 -->
-          <tr>
-            <td colspan="2"><div id="button-box">
-                <input type="button" id="start" value="开始" data-i18n="start_btn">
-                <input type="button" id="stop" value="停止" data-i18n="stop_btn">
-              </div></td>
-          </tr>
-        </tbody>
-      </table>
-    </form>
+              </td>
+            </tr>
+            <!-- 降噪行 -->
+            <tr>
+              <td data-i18n="noise_label">🌀 降噪</td>
+              <td><select name="noise_level">
+                  <option value="-1" data-i18n="noise_none">(-) 无</option>
+                  <option value="0" selected data-i18n="noise_low">(0) 低</option>
+                  <option value="1" data-i18n="noise_med">(1) 中</option>
+                  <option value="2" data-i18n="noise_high">(2) 高</option>
+                  <option value="3" data-i18n="noise_highest">(3) 最高</option>
+              </select></td>
+            </tr>
+            <!-- 放大倍率行 -->
+            <tr>
+              <td data-i18n="scale_label">🔍 放大</td>
+              <td>
+                <select name="scale">
+                  <option value="1" data-i18n="scale_1">1倍</option>
+                  <option value="2" selected data-i18n="scale_2">2倍</option>
+                  <option value="4" data-i18n="scale_4">4倍</option>
+                </select>
+                <span id="scale-comment" class="comment" data-i18n="scale_comment">不支持4倍</span>
+              </td>
+            </tr>
+            <!-- 分块行：将“随机顺序”复选框移到标题右边（第一个td内） -->
+            <tr>
+              <td style="display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <span data-i18n="tile_label">🧩 分块</span>
+                <label style="display: inline-flex; align-items: center; gap: 0.3rem; background: transparent; padding: 0; box-shadow: none;">
+                  <input type="checkbox" name="tile_random"> <span data-i18n="tile_random">随机顺序</span>
+                </label>
+              </td>
+              <td>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+                  <select name="tile_size">
+                    <option value="64">64</option>
+                    <option value="256" selected>256</option>
+                    <option value="400">400</option>
+                    <option value="640">640</option>
+                  </select>
+                </div>
+                <span id="tile-comment" class="comment" data-i18n="tile_comment">推荐256</span>
+              </td>
+            </tr>
+            <!-- TTA测试增强行 -->
+            <tr>
+              <td data-i18n="tta_label">🔄 测试增强 (TTA)</td>
+              <td>
+                <select name="tta"><option value="0" selected>0</option><option value="2">2</option><option value="4">4</option></select>
+                <span style="color:#4b6584;" data-i18n="tta_integrated">集成</span>
+               </td>
+            </tr>
+            <!-- 透明通道行 -->
+            <tr>
+              <td data-i18n="alpha_label">🎭 透明通道</td>
+              <td><select name="alpha"><option value="1" data-i18n="alpha_auto">自动</option><option value="0" selected data-i18n="alpha_disable">禁用</option></select></td>
+            </tr>
+            <!-- 按钮行，跨两列 -->
+            <tr class="full-width-row">
+              <td colspan="2"><div id="button-box">
+                  <input type="button" id="start" value="开始" data-i18n="start_btn">
+                  <input type="button" id="stop" value="停止" data-i18n="stop_btn">
+                </div></td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
 
-    <progress id="progress-bar" value="0" max="100"></progress>
-    <div id="message" data-i18n="message_ready">( ・∀・) 准备就绪</div>
+      <progress id="progress-bar" value="0" max="100"></progress>
+      <div id="message" data-i18n="message_ready">( ・∀・) 准备就绪</div>
+    </div>
   </div>
 
   <div id="footer">
@@ -538,7 +728,7 @@
 </div>
 
 <script>
-  // ==================== 国际化扩展 (模型帮助说明完整保留) ====================
+  // ==================== 国际化 (完整模型说明) ====================
   const i18n = {
     zh: {
       title: "Unlimited Waifu2x", subhead: "⚡ 浏览器端二次元放大 · 完全本地处理",
@@ -595,7 +785,6 @@
   };
 
   let currentLang = 'zh';
-  
   function switchLang(lang) {
     if (!i18n[lang]) return;
     currentLang = lang;
@@ -611,27 +800,10 @@
     });
   }
 
-  function copyToClipboard(text) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).catch(() => {});
-    } else {
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      document.body.appendChild(textarea);
-      textarea.select();
-      try { document.execCommand('copy'); } catch(e) {}
-      document.body.removeChild(textarea);
-    }
-  }
-  
-  function openExternalUrl(url) {
-    window.open(url, '_blank', 'noopener noreferrer');
-  }
-  
+  function openExternalUrl(url) { window.open(url, '_blank', 'noopener noreferrer'); }
   if (typeof window.downloadFile === 'undefined') {
     window.downloadFile = function(source, suggestedName) {
       try {
-        let blob = null;
         let finalName = suggestedName || `download_${Date.now()}.png`;
         const processBlob = (blobData) => {
           const url = URL.createObjectURL(blobData);
@@ -643,90 +815,52 @@
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
         };
-        if (source instanceof Blob) {
-          blob = source;
-          processBlob(blob);
-        } else if (typeof source === 'string' && (source.startsWith('blob:') || source.startsWith('data:'))) {
+        if (source instanceof Blob) processBlob(source);
+        else if (typeof source === 'string' && (source.startsWith('blob:') || source.startsWith('data:'))) {
           const a = document.createElement('a');
           a.href = source;
           a.download = finalName;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
-        } else if (typeof source === 'string') {
-          fetch(source, { cache: 'no-store' })
-            .then(res => res.blob())
-            .then(blobData => processBlob(blobData))
-            .catch(() => {});
-        } else {
-          throw new Error('unsupported source');
-        }
+        } else if (typeof source === 'string') fetch(source, { cache: 'no-store' }).then(res => res.blob()).then(processBlob).catch(()=>{});
       } catch(e) {}
     };
   }
-  
+
   (function fixFooterLink() {
     const githubLink = document.getElementById('external-github-link');
     if(githubLink) {
       const newLink = githubLink.cloneNode(true);
       githubLink.parentNode.replaceChild(newLink, githubLink);
-      newLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        openExternalUrl(newLink.href);
-      });
+      newLink.addEventListener('click', (e) => { e.preventDefault(); openExternalUrl(newLink.href); });
     }
     const privacyLink = document.querySelector('#footer a[href="privacy_policy.txt"]');
-    if(privacyLink) {
-      privacyLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        openExternalUrl(privacyLink.href);
-      });
-    }
+    if(privacyLink) privacyLink.addEventListener('click', (e) => { e.preventDefault(); openExternalUrl(privacyLink.href); });
   })();
-  
-  window.showSimpleModal = null;
-  if (window.showServiceModal) window.showServiceModal = null;
-  
-  function escapeHtml(str) {
-    return String(str).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
-  }
-  
+
+  function escapeHtml(str) { return String(str).replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
   function showModelHelpModal() {
     const existingModal = document.querySelector('.model-help-modal');
     if (existingModal) existingModal.remove();
     const lang = currentLang;
-    const title = i18n[lang].model_help_title;
-    const headerModel = i18n[lang].model_help_header_model;
-    const headerScene = i18n[lang].model_help_header_scene;
     const rows = [
       { name: i18n[lang].model_help_swin_art, desc: i18n[lang].model_help_swin_art_desc },
       { name: i18n[lang].model_help_swin_art_scan, desc: i18n[lang].model_help_swin_art_scan_desc },
       { name: i18n[lang].model_help_swin_photo, desc: i18n[lang].model_help_swin_photo_desc },
       { name: i18n[lang].model_help_cunet_art, desc: i18n[lang].model_help_cunet_art_desc }
     ];
-    let tableHtml = `<table class="model-help-table"><thead><tr><th>${escapeHtml(headerModel)}</th><th>${escapeHtml(headerScene)}</th></tr></thead><tbody>`;
-    rows.forEach(row => {
-      tableHtml += `<tr><td>${escapeHtml(row.name)}</td><td>${escapeHtml(row.desc)}</td></tr>`;
-    });
+    let tableHtml = `<table class="model-help-table"><thead><tr><th>${escapeHtml(i18n[lang].model_help_header_model)}</th><th>${escapeHtml(i18n[lang].model_help_header_scene)}</th></tr></thead><tbody>`;
+    rows.forEach(row => { tableHtml += `<tr><td>${escapeHtml(row.name)}</td><td>${escapeHtml(row.desc)}</td>`; });
     tableHtml += `</tbody></table>`;
     const overlay = document.createElement('div');
     overlay.className = 'model-help-modal';
-    overlay.innerHTML = `
-      <div class="model-help-card">
-        <div class="modal-header">${escapeHtml(title)}</div>
-        <div class="modal-body">${tableHtml}</div>
-        <div class="modal-actions">
-          <div class="modal-action-bottom">
-            <button id="modalHelpCloseBtn">${escapeHtml(i18n[lang].close_btn)}</button>
-          </div>
-        </div>
-      </div>
-    `;
+    overlay.innerHTML = `<div class="model-help-card"><div class="modal-header">${escapeHtml(i18n[lang].model_help_title)}</div><div class="modal-body">${tableHtml}</div><div class="modal-actions"><div class="modal-action-bottom"><button id="modalHelpCloseBtn">${escapeHtml(i18n[lang].close_btn)}</button></div></div></div>`;
     document.body.appendChild(overlay);
     overlay.querySelector('#modalHelpCloseBtn').onclick = () => overlay.remove();
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
   }
-  
+
   (function fixProgressBar() {
     const progressBar = document.getElementById('progress-bar');
     if (!progressBar) return;
@@ -751,7 +885,7 @@
     const msgDiv = document.getElementById('message');
     if(msgDiv) new MutationObserver(() => { if(msgDiv.innerText.toLowerCase().includes('complete')||msgDiv.innerText.includes('完成')) setTimeout(hideProgress,300); }).observe(msgDiv, { childList: true, subtree: true, characterData: true });
   })();
-  
+
   const fileInput = document.getElementById('file');
   const srcImg = document.getElementById('src');
   if(srcImg && fileInput) {
@@ -766,28 +900,18 @@
       }
     });
   }
-  
-  // 模型帮助按钮事件绑定（布局已移至模型标题右侧，事件确保可用）
+
   const helpBtn = document.getElementById('modelHelpBtn');
   if (helpBtn) {
     const newHelpBtn = helpBtn.cloneNode(true);
     helpBtn.parentNode.replaceChild(newHelpBtn, helpBtn);
-    newHelpBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      showModelHelpModal();
-    });
+    newHelpBtn.addEventListener('click', (e) => { e.preventDefault(); showModelHelpModal(); });
   }
-  
+
   document.addEventListener('DOMContentLoaded', () => switchLang('zh'));
   if (document.getElementById('lang-zh')) document.getElementById('lang-zh').addEventListener('click', () => switchLang('zh'));
   if (document.getElementById('lang-en')) document.getElementById('lang-en').addEventListener('click', () => switchLang('en'));
-  
-  if (typeof window.saveAsBlob === 'undefined') {
-    window.saveAsBlob = function(blob, filename) {
-      window.downloadFile(blob, filename);
-    };
-  }
-  
+  if (typeof window.saveAsBlob === 'undefined') window.saveAsBlob = function(blob, filename) { window.downloadFile(blob, filename); };
   delete window.showServiceModal;
   if (sessionStorage.getItem('waifu2x_service_modal_shown')) sessionStorage.removeItem('waifu2x_service_modal_shown');
 </script>
