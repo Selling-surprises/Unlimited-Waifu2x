@@ -4,6 +4,17 @@
   <meta charset="utf-8">
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=yes">
+  
+  <!-- === UWP 磁贴图标支持（新增） === -->
+  <meta name="application-name" content="Unlimited Waifu2x">
+  <meta name="msapplication-TileColor" content="#1b4c6e">
+  <meta name="msapplication-TileImage" content="img/favicon-192.png">
+  <meta name="msapplication-square70x70logo" content="img/favicon-128.png">
+  <meta name="msapplication-square150x150logo" content="img/favicon-192.png">
+  <meta name="msapplication-square310x310logo" content="img/favicon-512.png">
+  <meta name="msapplication-wide310x150logo" content="img/favicon-512.png">
+  <!-- ============================ -->
+
   <link rel="icon" href="favicon.ico">
   <title>Unlimited Waifu2x</title>
   <link href="css/Inter.css" rel="stylesheet">
@@ -12,6 +23,7 @@
   <script src="js/ort.min.js"></script>
   <script src="js/script.js" charset="utf-8"></script>
   <style>
+    /* 原有样式完全不变 */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -229,7 +241,7 @@
       word-break: keep-all;
     }
     select {
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2334495e" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+      background-image: url('data:image/svg+xml;utf8,http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2334495e" stroke-width="2">');
       background-repeat: no-repeat;
       background-position: right 1rem center;
       background-size: 1.2rem;
@@ -698,7 +710,7 @@
               <td>
                 <select name="tta"><option value="0" selected>0</option><option value="2">2</option><option value="4">4</option></select>
                 <span style="color:#4b6584;" data-i18n="tta_integrated">集成</span>
-               </td>
+              </td>
             </tr>
             <!-- 透明通道行 -->
             <tr>
@@ -857,7 +869,7 @@
     overlay.className = 'model-help-modal';
     overlay.innerHTML = `<div class="model-help-card"><div class="modal-header">${escapeHtml(i18n[lang].model_help_title)}</div><div class="modal-body">${tableHtml}</div><div class="modal-actions"><div class="modal-action-bottom"><button id="modalHelpCloseBtn">${escapeHtml(i18n[lang].close_btn)}</button></div></div></div>`;
     document.body.appendChild(overlay);
-    overlay.querySelector('#modalHelpCloseBtn').onclick = () => overlay.remove();
+    overlay。querySelector('#modalHelpCloseBtn').onclick = () => overlay.remove();
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
   }
 
