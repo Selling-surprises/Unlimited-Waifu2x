@@ -427,6 +427,8 @@
     .modal-action-bottom button:hover {
       background: #e2eaf2;
     }
+    
+    /* ========== 桌面端 (≥900px) 优化布局 ========== */
     @media (min-width: 900px) {
       #main-panel {
         flex-direction: row;
@@ -544,32 +546,181 @@
         font-size: 1.2rem;
       }
     }
+    
+    /* ========== 移动端深度修复 (≤899px) 完全重排队列，彻底解决错位 ========== */
     @media (max-width: 899px) {
       .settings-area {
         width: 100%;
       }
       #src, #dest {
-        max-height: 300px;
+        max-height: 280px;
         min-height: 140px;
       }
-      #form-box td:first-child {
-        min-width: 120px;
-      }
-      .comment {
-        white-space: normal;
-      }
-      #form-box tr.full-width-row {
-        display: flex;
-        flex-wrap: wrap;
-      }
-    }
-    @media (max-width: 480px) {
+      /* 核心修复：将表单垂直化，避免标签与控件错位、溢出 */
       #form-box {
         padding: 1.2rem;
+        width: 100%;
+        overflow-x: hidden;
+      }
+      #form-box tbody {
+        display: block;
+        width: 100%;
+      }
+      #form-box tr {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+        margin-bottom: 1.4rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e2edf7;
+        background: transparent;
+        width: 100%;
+      }
+      #form-box tr:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+      /* 标签样式：去除复杂背景，清晰块级 */
+      #form-box td:first-child {
+        min-width: auto;
+        width: 100%;
+        background: transparent;
+        padding: 0;
+        box-shadow: none;
+        border-radius: 0;
+        font-weight: 600;
+        font-size: 1rem;
+        color: #1e3a5f;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.25rem;
+      }
+      /* 右侧控件区域：垂直排列，所有控件宽度自适应占满 */
+      #form-box td:last-child {
+        width: 100%;
+        min-width: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.6rem;
+        flex: auto;
+      }
+      /* 所有输入类控件占满宽度，方便触屏 */
+      #form-box select,
+      #form-box input[type="file"],
+      #form-box .comment,
+      #form-box div[style*="flex"] {
+        width: 100%;
+        max-width: 100%;
+      }
+      /* 特殊处理下拉菜单和复选框等组合区（分块区域：随机顺序+下拉菜单+注释） */
+      #form-box td:last-child > div {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        width: 100%;
+      }
+      /* 下拉框全宽 */
+      #form-box select {
+        width: 100%;
+        padding: 0.7rem 2rem 0.7rem 1rem;
+        font-size: 1rem;
+      }
+      /* 文件上传按钮显示清晰 */
+      input[type="file"] {
+        width: 100%;
+        padding: 0.7rem 0.8rem;
+        font-size: 0.9rem;
+        white-space: normal;
+        word-break: break-all;
+      }
+      /* 复选框区域保持内联但宽度自适应, 保证整行可点击 */
+      label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #f8fafd;
+        padding: 0.5rem 0.8rem;
+        border-radius: 40px;
+        width: fit-content;
+        border: 1px solid #dce5ef;
+      }
+      /* 注释块变成块级展示，信息清晰 */
+      .comment {
+        white-space: normal;
+        width: auto;
+        display: inline-block;
+        text-align: center;
+        margin-top: 0.2rem;
+        background: #e6f0fa;
+      }
+      /* 模型帮助按钮在移动端大小适中 */
+      .model-help-btn {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.8rem;
+        white-space: nowrap;
+      }
+      /* 按钮区域全宽按钮组 */
+      #button-box {
+        flex-direction: row;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 0.5rem;
+        width: 100%;
+      }
+      #start, #stop {
+        flex: 1;
+        text-align: center;
+        padding: 0.8rem 0.5rem;
+        font-size: 1.1rem;
+      }
+      /* 进度条和消息框适应 */
+      #progress-bar {
+        width: 100%;
+      }
+      #message {
+        font-size: 1rem;
+        padding: 0.8rem 1rem;
+      }
+      /* 图片预览保持比例，不溢出 */
+      #src-box, #dest-box {
+        padding: 1rem;
+      }
+      /* 确保任何溢出隐藏 */
+      .app-container {
+        overflow-x: hidden;
+      }
+      /* 修正full-width-row 内td 在移动端表现，避免重复属性冲突 */
+      .full-width-row td:last-child {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+      /* 随机顺序复选框与下拉菜单分离时保持良好间距 */
+      #form-box td:last-child select + label,
+      #form-box td:last-child div > label {
+        margin-top: 0.2rem;
+      }
+    }
+    /* 针对非常小的手机（<400px）精细调整 */
+    @media (max-width: 480px) {
+      #form-box {
+        padding: 1rem;
       }
       .model-help-btn {
         padding: 0.25rem 0.7rem;
         font-size: 0.7rem;
+      }
+      #start, #stop {
+        font-size: 1rem;
+        padding: 0.6rem 0.5rem;
+      }
+      .box-label {
+        font-size: 0.85rem;
       }
     }
   </style>
@@ -604,8 +755,8 @@
             <tr class="full-width-row">
               <td style="display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                 <span data-i18n="file_emoji_label">📂 文件</span><span>(<span data-i18n="drag_text">拖拽</span>)</span>
-              </td>
-              <td><input type="file" id="file" name="file" accept="image/*"></td>
+               </td>
+               <td><input type="file" id="file" name="file" accept="image/*"></td>
             </tr>
             <tr>
               <td style="display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
@@ -817,7 +968,7 @@
       { name: i18n[lang].model_help_cunet_art, desc: i18n[lang].model_help_cunet_art_desc }
     ];
     let tableHtml = `<table class="model-help-table"><thead><tr><th>${escapeHtml(i18n[lang].model_help_header_model)}</th><th>${escapeHtml(i18n[lang].model_help_header_scene)}</th></tr></thead><tbody>`;
-    rows.forEach(row => { tableHtml += `<tr><td>${escapeHtml(row.name)}</td><td>${escapeHtml(row.desc)}</td>`; });
+    rows.forEach(row => { tableHtml += `<tr><td>${escapeHtml(row.name)}</td><td>${escapeHtml(row.desc)}</td></tr>`; });
     tableHtml += `</tbody></table>`;
     const overlay = document.createElement('div');
     overlay.className = 'model-help-modal';
@@ -882,7 +1033,7 @@
   if (sessionStorage.getItem('waifu2x_service_modal_shown')) sessionStorage.removeItem('waifu2x_service_modal_shown');
 </script>
 
-<!-- ========== Service Worker 注册（PWA 安装提示核心） ========== -->
+<!-- Service Worker 注册（PWA 安装提示） -->
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
