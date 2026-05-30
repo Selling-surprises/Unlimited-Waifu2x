@@ -13,6 +13,9 @@
   <meta name="msapplication-square150x150logo" content="img/favicon-192.png">
   <meta name="msapplication-square310x310logo" content="img/favicon-512.png">
   <meta name="msapplication-wide310x150logo" content="img/favicon-512.png">
+  
+  <!-- === PWA manifest 支持（新增，触发安装提示） === -->
+  <link rel="manifest" href="manifest.json">
   <!-- ============================ -->
 
   <link rel="icon" href="favicon.ico">
@@ -23,7 +26,7 @@
   <script src="js/ort.min.js"></script>
   <script src="js/script.js" charset="utf-8"></script>
   <style>
-    /* 原有样式完全不变 */
+    /* 原有样式完全不变（省略，与之前完全一致） */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -241,7 +244,7 @@
       word-break: keep-all;
     }
     select {
-      background-image: url('data:image/svg+xml;utf8,http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2334495e" stroke-width="2">');
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2334495e" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>');
       background-repeat: no-repeat;
       background-position: right 1rem center;
       background-size: 1.2rem;
@@ -863,13 +866,13 @@
       { name: i18n[lang].model_help_cunet_art, desc: i18n[lang].model_help_cunet_art_desc }
     ];
     let tableHtml = `<table class="model-help-table"><thead><tr><th>${escapeHtml(i18n[lang].model_help_header_model)}</th><th>${escapeHtml(i18n[lang].model_help_header_scene)}</th></tr></thead><tbody>`;
-    rows.forEach(row => { tableHtml += `<tr><td>${escapeHtml(row.name)}</td><td>${escapeHtml(row.desc)}</td>`; });
+    rows.forEach(row => { tableHtml += `<tr><td>${escapeHtml(row.name)}</td><td>${escapeHtml(row.desc)}</td></tr>`; });
     tableHtml += `</tbody></table>`;
     const overlay = document.createElement('div');
     overlay.className = 'model-help-modal';
     overlay.innerHTML = `<div class="model-help-card"><div class="modal-header">${escapeHtml(i18n[lang].model_help_title)}</div><div class="modal-body">${tableHtml}</div><div class="modal-actions"><div class="modal-action-bottom"><button id="modalHelpCloseBtn">${escapeHtml(i18n[lang].close_btn)}</button></div></div></div>`;
     document.body.appendChild(overlay);
-    overlay。querySelector('#modalHelpCloseBtn').onclick = () => overlay.remove();
+    overlay.querySelector('#modalHelpCloseBtn').onclick = () => overlay.remove();
     overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
   }
 
