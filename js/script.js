@@ -677,6 +677,10 @@ $(function () {
     ort.env.wasm.proxy = false;
     ort.env.wasm.numThreads = 1;
 
+    ort.env.wasm.simd = true;
+
+    ort.env.wasm.wasmPaths = 'js/';
+
     function removeAlpha(blob)
     {
         // TODO: I want to remove alpha channel (PNG24, not PNG32) but can't find a way.
