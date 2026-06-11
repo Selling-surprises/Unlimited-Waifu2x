@@ -674,8 +674,8 @@ function uuid()
 /* UI */
 $(function () {
     /* init */
-    ort.env.wasm.proxy = true;
-    ort.env.wasm.numThreads = navigator.hardwareConcurrency;
+    ort.env.wasm.proxy = false;
+    ort.env.wasm.numThreads = 1;
 
     function removeAlpha(blob)
     {
